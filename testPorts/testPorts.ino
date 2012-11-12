@@ -15,6 +15,7 @@
 // constants outputs
 // all pins as outputs
 
+//well organized
 //Analog pins used as digital outputs
 const int ledPin23 = 23; //19 A5 o
 const int ledPin22 = 22; //18 A4 n
