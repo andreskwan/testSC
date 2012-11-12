@@ -42,8 +42,7 @@ const int ledPin5 = 5;
 const int ledPin4 = 4;
 const int ledPin3 = 3;
 const int ledPin2 = 2;   
-const int ledPin1 = 1; // TX
-const int ledPin0 = 0; // RX  
+
 
 //constan inputs
 //Analog pins used as digital outputs
@@ -53,6 +52,9 @@ const int pinA2p21 = 21; //17 A3 m
 const int pinA3p20 = 20; //16 A2 l
 const int pinA4p19 = 19; //15 A1 k
 const int pinA5p18 = 18; //14 A0 j
+
+const int pinTxP1 = 1; // TX
+const int pinRxP0 = 0; // RX  
 
 
 
@@ -78,8 +80,8 @@ void setup() {
   
   /////////////////////////////////////
   //set inputs 
-  pinMode(ledPin0,INPUT); //RX
-  pinMode(ledPin1,INPUT); //TX
+  pinMode(pinRxP0,INPUT); //RX
+  pinMode(pinTxP1,INPUT); //TX
 
   //Analog pins used as digital outputs
   pinMode(pinA5p18,INPUT); //14
@@ -108,7 +110,7 @@ void loop () {
 
 /*   digitalWrite(pinA4p19, HIGH);   // turn the LED on (HIGH is the voltage level) */
 /*   delay(1000);                    // wait for a second */
-/*   digitalWrite(ledPin14, HIGH);    // turn the LED off by making the voltage LOW */
+/*   digitalWrite(pinTxP14, HIGH);    // turn the LED off by making the voltage LOW */
 /*   delay(1000);      // wait for a second */
 
   switch (valor) {
@@ -117,7 +119,7 @@ void loop () {
         spPrintValue(valor);
     //do something when var equals 1
     Serial.println("o 63 pin23 == o");
-    digitalRead(pinA0p23);   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(pinA0p23,"pinA0p23");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
     break;   
    //n 
@@ -125,7 +127,7 @@ void loop () {
       spPrintValue(valor);
     //do something when var equals 1
     Serial.println("n 62 pin22 == n");
-    digitalRead(pinA1p22);   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(pinA1p22,"pinA1p22");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
 
     break;  
@@ -134,7 +136,7 @@ void loop () {
       spPrintValue(valor);
     //do something when var equals 1
     Serial.println("m 61 pin21 == m");
-    digitalRead(pinA2p21);   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(pinA2p21,"pinA2p21");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
 
     break; 
@@ -143,7 +145,7 @@ void loop () {
         spPrintValue(valor);
     //do something when var equals 1
     Serial.println("l 60 pin20 == l");
-    digitalRead(pinA3p20);   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(pinA3p20,"pinA3p20");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
 
     break;   
@@ -152,7 +154,7 @@ void loop () {
         spPrintValue(valor);
     //do something when var equals 1
     Serial.println("k 59 pin19 == k");
-    digitalRead(pinA4p19);   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(pinA4p19,"pinA4p19");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
 
     break;   
@@ -161,20 +163,11 @@ void loop () {
       spPrintValue(valor);
     //do something when var equals 1
     Serial.println("j 58 pin18 == j");
-    digitalRead(pinA5p18);   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(pinA5p18,"pinA5p18");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
 
     break;  
 
-  //e   
-  case 53:
-      spPrintValue(valor);
-    //do something when var equals 1
-    Serial.println("e pin13 == e");
-    digitalWrite(ledPin13, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
-    digitalWrite(ledPin13, LOW);   // turn the LED on (HIGH is the voltage level)
-    break;  
     //d
   case 52:
         spPrintValue(valor);
@@ -276,20 +269,18 @@ void loop () {
 
   case 1:
     //do something when var equals 1
-    Serial.println("1 TX == 1");
-    digitalWrite(ledPin1, HIGH);   // turn the LED on (HIGH is the voltage level)
+    //do something when var equals 1
+    Serial.println("1 pin1 == 1");
+    spWriteStateInput(pinTxP0,"pinTxP0");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
-    digitalWrite(ledPin1, LOW);   // turn the LED on (HIGH is the voltage level)
     break;    
 
   case 0:
     //do something when var equals 1
-    Serial.println("0 RX == 0");
-    digitalWrite(ledPin0, HIGH);   // turn the LED on (HIGH is the voltage level)
+    Serial.println("0 pin0 == 0");
+    spWriteStateInput(pinRxP0,"pinRxP0");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
-    digitalWrite(ledPin0, LOW);   // turn the LED on (HIGH is the voltage level)
     break;    
-
 
   default: 
     break;
@@ -306,11 +297,14 @@ void spPrintValue(int valor){
     delay(1000);
 }
 
+
+
 void spWriteStateOutput(){
 
 } 
 
-void spWriteStateInput(int pinInput){
+void spWriteStateInput(int pinInput,String pinName){
+  Serial.print(pinName+" :");
   if(digitalRead(pinInput)==HIGH){
     spPrintValue(1);
   }else{
