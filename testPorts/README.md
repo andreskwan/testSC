@@ -1,0 +1,1 @@
+this branch was created to verify A0toA5 and Rx , Tx as nputs 
