@@ -13,26 +13,30 @@
  * based on "serial_read_advanced" example
  */
 #include <SoftwareSerial.h>
+
 //////////////////////////////////////////////////////////////
-// constants
-int ledPin13 = 13;   //12 select the pin for the LED
-int ledPin12 = 12;
-int ledPin11 = 11;
-int ledPin10 = 10;
-int ledPin9 = 9;
-int ledPin8 = 8;
-int ledPin7 = 7;
-int ledPin6 = 6;
-int ledPin5 = 5;
-int ledPin4 = 4;
-int ledPin3 = 3;
-int ledPin2 = 2;   
+// constants outputs
+const int p13motorIzqOn = 13;   //12 select the pin for the LED
+const int p12motorDerOn = 12;
 
-//input
-int pin0motor1 = 0;    
-int pin1motor2 = 0;    
+const int ledPin11 = 11;
+const int ledPin10 = 10;
+const int ledPin9 = 9;
+const int ledPin8 = 8;
+const int ledPin7 = 7;
+const int ledPin6 = 6;
+const int ledPin5 = 5;
+const int ledPin4 = 4;
+const int ledPin3 = 3;
+const int ledPin2 = 2;   
 
-int valor = 0;         // variable to store the data from the serial port
+//////////////////////////////////////////////////////////////
+//constan inputs
+const int pin0motor1 = 0;    
+const int pin1motor2 = 0;    
+
+
+
 
 //////////////////////////////////////////////////////////////
 // Variables will change:
@@ -41,6 +45,9 @@ int estadoMotor2 = 0;         // current state of the button
 int ultimoEstadoM1 = 0;     // previous state of the button
 int ultimoEstadoM2 = 0;     // previous state of the button
 
+int valor = 0;         // variable to store the data from the serial port
+
+//////////////////////////////////////////////////////////////
 void setup() {
   pinMode(pin0motor1,INPUT);    // declare the LED's pin as input
   pinMode(pin1motor2,INPUT);    // declare the LED's pin as input  
@@ -55,7 +62,8 @@ void setup() {
   pinMode(ledPin9,OUTPUT); 
   pinMode(ledPin10,OUTPUT); 
   pinMode(ledPin11,OUTPUT); 
-  pinMode(ledPin12,OUTPUT); 
+  pinMode(p13motorIzq,OUTPUT); 
+  pinMode(p12motorIzq,OUTPUT); 
 
   Serial.begin(9600);        // connect to the serial port
  
@@ -199,4 +207,22 @@ void loop () {
   //   //Serial.println();
   // }
 }
+
+int systemState() {
+  
+}
+
+boolean isSystemOn(){
+  
+}
+
+boolean areMotorsOn(){
+ 
+}
+
+boolean isMotorON(int pinMotorX){
+  
+}
+  
+  
 
