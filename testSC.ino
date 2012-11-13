@@ -266,8 +266,6 @@ void loop () {
   default: 
     break;
 
-    // if nothing else matches, do the default
-    // default is optional
   }
 
 }
