@@ -335,5 +335,6 @@ void printSerialValue(int valor){
     Serial.print("data: ");
     Serial.println(valor);
     delay(1000);
+    digitalWrite(ledPin18,HIGH);
 }
 
