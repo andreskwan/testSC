@@ -37,20 +37,25 @@ const int oP8DerClose = 8;
 
 //Encendido Motores
 //quitar corriente en los motores
-const int oP7MoIzqOnOff = 7;
-const int oP6MoDerOnOff = 6;
+const int oP7MoIzqOn = 7;
+const int oP6MoDerOn = 6;
 
 //constan inputs
 //Analog pins used as digital outputs
-const int iA0PilotoIzq = 23; //19 A5 o
-const int iA1PilotoDer = 22; //18 A4 n
-const int iA2PilotoGiroIzq = 21; //17 A3 m
-const int iA3PilotoGiroDer = 20; //16 A2 l
-const int iA4DoorIzqClose = 19; //15 A1 k
-const int iA5DoorIzqOpen = 18; //14 A0 j
+//pilotos motor
+const int iA0IzqOn = 23; //19 A5 o
+const int iA1DerOn = 22; //18 A4 n
 
-const int inTxDoorDerOpen = 1; // TX
-const int inRxDoorDerClose = 0; // RX  
+//pilotos de giro
+const int iA2GiroIzq = 21; //17 A3 m
+const int iA3GiroDer = 20; //16 A2 l
+
+//Finales de carrera
+const int iA4IzqClose = 19; //15 A1 k
+const int iA5IzqOpen = 18; //14 A0 j
+
+const int iTxDerOpen = 1; // TX
+const int iRxDerClose = 0; // RX  
 
 //////////////////////////////////////////////////////////////
 // Variables will change:
@@ -62,17 +67,17 @@ void setup() {
 //finales de carrera con logica invertida
 
   //Motores energizados          //       Pilotos activos     
-  pinMode(oP6MoDerOnOff,OUTPUT); // 6  on iA1PilotoDer On if On
-  pinMode(oP7MoIzqOnOff,OUTPUT); // 7  on iA0PilotoIzq On if On
+  pinMode(oP6MoDerOn,OUTPUT); // 6  on iA1DerOn On if On
+  pinMode(oP7MoIzqOn,OUTPUT); // 7  on iA0IzqOn On if On
 
   //puertas cerrandose           //       Pilotos de giro activos  
   pinMode(oP8DerClose,OUTPUT);   // 8  on iA3PilotoGiroDer On
                                  
                                  //       FC en on cuando se cierra
-                                 //       inRxDoorDerClose when On todos Der a off                                   
+                                 //       iRxDerClose when On todos Der a off                                   
                                  //               en off cuando los otros en on  
   pinMode(oP9IzqClose,OUTPUT);   // 9  on iA2PilotoGiroIzq On
-                                 //       inTxDoorIzqClose when On todos Izq a off                                   
+                                 //       iTxIzqClose when On todos Izq a off                                   
                                  //               en off cuando los otros en on  
 
   pinMode(oP10DerStop,OUTPUT);   // 10 on 
@@ -83,18 +88,20 @@ void setup() {
   
   /////////////////////////////////////
   //info en los finales de carrera
-  pinMode(inRxDoorDerClose,INPUT); //RX 0        
-  pinMode(inTxDoorDerOpen,INPUT);  //TX 1    
-  pinMode(iA5DoorIzqOpen,INPUT);   //14 j    
-  pinMode(iA4DoorIzqClose,INPUT);  //15 k 59   
+  pinMode(iRxDerClose,INPUT); //RX 0        
+  pinMode(iA4IzqClose,INPUT);  //15 k 59   
+
+  pinMode(iTxDerOpen,INPUT);  //TX 1    
+  pinMode(iA5IzqOpen,INPUT);   //14 j    
+
 
   //info de los pilotos
   //pilotos de giro
-  pinMode(iA3PilotoGiroDer,INPUT); //16 l 60
-  pinMode(iA2PilotoGiroIzq,INPUT); //17 m 61
+  pinMode(iA3GiroDer,INPUT); //16 l 60
+  pinMode(iA2GiroIzq,INPUT); //17 m 61
   //pilotos energizar motores
-  pinMode(iA1PilotoDer,INPUT);     //18 n 62
-  pinMode(iA0PilotoIzq,INPUT);     //19 o 63
+  pinMode(iA1DerOn,INPUT);     //18 n 62
+  pinMode(iA0IzqOn,INPUT);     //19 o 63
 
   Serial.begin(9600);        // connect to the serial port
  
@@ -115,7 +122,7 @@ void loop () {
     spPrintValue(valor);
     //do something when var equals 1
     Serial.println("o 63 pin23 == o");
-    spWriteStateInput(iA0PilotoIzq,"iA0PilotoIzq");   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(iA0IzqOn,"iA0IzqOn");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
     break;   
     //n 
@@ -124,7 +131,7 @@ void loop () {
     spPrintValue(valor);
     //do something when var equals 1
     Serial.println("n 62 pin22 == n");
-    spWriteStateInput(iA1PilotoDer,"iA1PilotoDer");   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(iA1DerOn,"iA1DerOn");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
     break;  
     //m  
@@ -133,7 +140,7 @@ void loop () {
     spPrintValue(valor);
     //do something when var equals 1
     Serial.println("m 61 pin21 == m");
-    spWriteStateInput(iA2PilotoGiroIzq,"iA2PilotoGiroIzq");   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(iA2GiroIzq,"iA2GiroIzq");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
     break; 
     //l
@@ -142,7 +149,7 @@ void loop () {
     spPrintValue(valor);
     //do something when var equals 1
     Serial.println("l 60 pin20 == l");
-    spWriteStateInput(iA3PilotoGiroDer,"iA3PilotoGiroDer");   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(iA3GiroDer,"iA3GiroDer");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
     break;   
     //k
@@ -151,7 +158,7 @@ void loop () {
     spPrintValue(valor);
     //do something when var equals 1
     Serial.println("k 59 pin19 == k");
-    spWriteStateInput(iA4DoorIzqClose,"iA4DoorIzqClose");   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(iA4IzqClose,"iA4IzqClose");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
     break;   
 
@@ -160,7 +167,7 @@ void loop () {
     spPrintValue(valor);
     //do something when var equals 1
     Serial.println("j 58 pin18 == j");
-    spWriteStateInput(iA5DoorIzqOpen,"iA5DoorIzqOpen");   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(iA5IzqOpen,"iA5IzqOpen");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
     break;  
 
@@ -226,32 +233,32 @@ void loop () {
     spPrintValue(valor);
     //do something when var equals 1
     Serial.println("7 == a");
-    digitalWrite(oP7MoIzqOnOff, HIGH);   // turn the LED on (HIGH is the voltage level)
+    digitalWrite(oP7MoIzqOn, HIGH);   // turn the LED on (HIGH is the voltage level)
     delay(1000);
-    digitalWrite(oP7MoIzqOnOff, LOW);   // turn the LED on (HIGH is the voltage level)
+    digitalWrite(oP7MoIzqOn, LOW);   // turn the LED on (HIGH is the voltage level)
     break;
 
   case 6:
     //do something when var equals 1
     spPrintValue(valor);
     Serial.println("6 == a");
-    digitalWrite(oP6MoDerOnOff, HIGH);   // turn the LED on (HIGH is the voltage level)
+    digitalWrite(oP6MoDerOn, HIGH);   // turn the LED on (HIGH is the voltage level)
     delay(1000);
-    digitalWrite(oP6MoDerOnOff, LOW);   // turn the LED on (HIGH is the voltage level)
+    digitalWrite(oP6MoDerOn, LOW);   // turn the LED on (HIGH is the voltage level)
     break;
 
   case 1:
     //do something when var equals 1
     //do something when var equals 1
     Serial.println("1 pin1 == 1");
-    spWriteStateInput(inTxDoorDerOpen,"inTxDoorDerOpen");   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(iTxDerOpen,"iTxDerOpen");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
     break;    
 
   case 0:
     //do something when var equals 1
     Serial.println("0 pin0 == 0");
-    spWriteStateInput(inRxDoorDerClose,"inRxDoorDerClose");   // turn the LED on (HIGH is the voltage level)
+    spWriteStateInput(iRxDerClose,"iRxDerClose");   // turn the LED on (HIGH is the voltage level)
     delay(1000);
     break;    
 
