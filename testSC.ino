@@ -19,6 +19,7 @@
 //switch system state
 const int OFF          = 0;
 const int ON           = 1;
+const int UNSTABLE     = 1;
 
 //switch door state
 const int STOPPED             = 1;
@@ -85,21 +86,26 @@ int oP6MoROn = 6;
 // iTxLOn por iA1LOn 22
 //y
 int iTxLOn = 1; // TX
-int iRxROn = 0; // RX  
 
+int iRxROn = 0; // RX  
 //lugo de la prueba devolver
 // iA0ROpen  = iA0ROn 23
 // iA1RClose = iA1LOn 22
 
 int iA0ROn  = 23; //19 A5 o
+
 int iA1LOn  = 22; //18 A4 n
+
 
 //pilotos de giro
 int iA2TurnL = 21; //17 A3 m
+
 int iA3TurnR = 20; //16 A2 l
+
 
 //Finales de carrera
 int iA4LClose = 19; //15 A1 k On in Low Off in High
+
 int iA5LOpen = 18; //14 A0 j
 
 
@@ -153,6 +159,16 @@ void setup() {
   pinMode(iA0ROn,INPUT);     //18 n 62
   pinMode(iTxLOn,INPUT);     //19 o 63
 
+/*   digitalWrite(iTxLOn,HIGH); */
+/*   digitalWrite(iRxROn,HIGH); */
+/*   digitalWrite(iA0ROn,HIGH); */
+/*   digitalWrite(iA1LOn,HIGH); */
+/*   digitalWrite(iA2TurnL,HIGH); */
+/*   digitalWrite(iA3TurnR,HIGH); */
+/*   digitalWrite(iA4LClose,HIGH); */
+/*   digitalWrite(iA5LOpen,HIGH); */
+
+
   Serial.begin(9600);        // connect to the serial port
  
   while (!Serial) {
@@ -166,22 +182,22 @@ void loop () {
   order  = order  - 48;
 
   identifyMotorsState();
-/*   //   order  = processUserOrder (valor); */
-/*   identifyDoorsState(); */
+  /*   //   order  = processUserOrder (valor); */
+  /*   identifyDoorsState(); */
 
-/*   switch (doorsState()) { */
-/*   case STOPPED: */
-/*     activateDoors(order); */
-/*     break; */
-/*   case MOVING: */
-/*     stopDoors(); */
-/*     break; */
-/*   default: */
-/*     Serial.print("Not valid DOORSS STATE. ERR_NOT_VALID: " ); */
-/*     Serial.println(ERR_NOT_VALID); */
-/*     Serial.print("Order: " ); */
-/*     Serial.println(order); */
-/*   } */
+  /*   switch (doorsState()) { */
+  /*   case STOPPED: */
+  /*     activateDoors(order); */
+  /*     break; */
+  /*   case MOVING: */
+  /*     stopDoors(); */
+  /*     break; */
+  /*   default: */
+  /*     Serial.print("Not valid DOORSS STATE. ERR_NOT_VALID: " ); */
+  /*     Serial.println(ERR_NOT_VALID); */
+  /*     Serial.print("Order: " ); */
+  /*     Serial.println(order); */
+  /*   } */
 }
 
 
@@ -207,54 +223,57 @@ void identifyMotorsState(){
       Serial.println(ERR_ON);
     }
     break;
+  case UNSTABLE:
+    Serial.print("Can't identify motor state. UNSTABLE: " );
+    Serial.println(UNSTABLE);
+    break;
   default:
-    Serial.print("Can't identify motor state. ERR_NOT_VALID: " );
+    Serial.print("NOT valid state. ERR_NOT_VALID: " );
     Serial.println(ERR_NOT_VALID);
   }
 }
 //DONE
-boolean turnMotorsOn(){
-  digitalWrite(oP7MoLOn, HIGH);
-  digitalWrite(oP6MoROn, HIGH);
-  delay(500);
-  if(isL_On() && isR_On()){
-    return true;
-  }
-  return false;
-}
-//DONE
 int motorsState(){
-  //motorsOn or Off
-  /*     boolean isLOn = false; */
-  /*     boolean isROn = false; */
-  /*     if(isL_On() ){  */
-  /*       isLOn = true; */
-  /*     }else{ */
-  /*       isLOn = false; */
-  /*     } */
-
-  /*     if(isR_On()){ */
-  /*       isROn = true; */
-  /*     }else{ */
-  /*       isROn = false; */
-  /*     } */
-  //if true
-    Serial.println("*******************************");
-    Serial.println("inside motorsState()");
-  if(isL_On() && isR_On()){
-    Serial.println("Both motors ON");
-    Serial.println("*******************************");
+  Serial.println("*******************************");
+  Serial.println("inside motorsState()");
+  if(areMotorsOn()){
     return ON;
+  }else if(areMotorsOff()){
+    return OFF;
+  }else{
+    return UNSTABLE;
+  }
+         
+}
+
+boolean areMotorsOn(){
+  if(isR_On() && isL_On()){
+    Serial.println("Both motors ON");
+    //    Serial.println("*******************************");
+    return true;
   }else{ 
+    Serial.println("NOT Both motors ON");
+    Serial.println("*******************************");
+    return false;
+  }
+}
+
+boolean areMotorsOff(){
+  if(!isR_On() && !isL_On()){
     Serial.println("Both motors OFF");
     Serial.println("*******************************");
-    return OFF;
+    return true;
+  }else{ 
+    Serial.println("NOT Both motors OFF");
+    Serial.println("*******************************");
+    return false;
   }
 }
+
 //DONE
 boolean isL_On(){
-    Serial.println("************************");
-    Serial.println("inside isL_On()");
+  Serial.println("************************");
+  Serial.println("inside isL_On()");
 
   if(digitalRead(iA1LOn) == HIGH){
     Serial.println("Left motor ON");
@@ -278,6 +297,17 @@ boolean isR_On(){
   }
   Serial.println("Righ motor OFF");
   Serial.println("************************");
+  return false;
+}
+
+//DONE
+boolean turnMotorsOn(){
+  digitalWrite(oP7MoLOn, HIGH);
+  digitalWrite(oP6MoROn, HIGH);
+  delay(500);
+  if(isR_On() && isL_On()){
+    return true;
+  }
   return false;
 }
 
