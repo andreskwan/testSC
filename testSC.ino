@@ -74,8 +74,25 @@ int oP6MoROn = 6;
 //pilotos motor
 //A0 = Tx
 //A1 = Rx 
-int iA0ROpen  = 23; //19 A5 o
-int iA1RClose = 22; //18 A4 n
+// asi lo quiero
+//int iA0ROpen  = 23; //19 A5 o
+//int iA1RClose = 22; //18 A4 n
+/* int iTxLOn = 1; // TX */
+/* int iRxROn = 0; // RX   */
+
+//asi debo modificarlo para hacer las pruebas
+// iRxROn por iA0ROn 23
+// iTxLOn por iA1LOn 22
+//y
+int iTxLOn = 1; // TX
+int iRxROn = 0; // RX  
+
+//lugo de la prueba devolver
+// iA0ROpen  = iA0ROn 23
+// iA1RClose = iA1LOn 22
+
+int iA0ROn  = 23; //19 A5 o
+int iA1LOn  = 22; //18 A4 n
 
 //pilotos de giro
 int iA2TurnL = 21; //17 A3 m
@@ -85,8 +102,6 @@ int iA3TurnR = 20; //16 A2 l
 int iA4LClose = 19; //15 A1 k On in Low Off in High
 int iA5LOpen = 18; //14 A0 j
 
-int iTxLOn = 1; // TX
-int iRxROn = 0; // RX  
 
 //////////////////////////////////////////////////////////////
 // Variables will change:
@@ -99,14 +114,14 @@ void setup() {
 
   //finales de carrera con logica invertida
   //Motores energizados          //       Pilotos activos     
-  pinMode(oP6MoROn,OUTPUT); // 6  on iRxROn On if On
+  pinMode(oP6MoROn,OUTPUT); // 6  on iA0ROn On if On
   pinMode(oP7MoLOn,OUTPUT); // 7  on iTxLOn On if On
 
   //puertas cerrandose           //       Pilotos de giro activos  
   pinMode(oP8RClose,OUTPUT);   // 8  on iA3PilotoTurnR On
                                  
   //       FC en on cuando se cierra
-  //       iA1RClose when On todos R a off                                   
+  //      iA1LOn when On todos R a off                                   
   //               en off cuando los otros en on  
   pinMode(oP9LClose,OUTPUT);   // 9  on iA2PilotoTurnL On
   //       iTxLClose when On todos L a off                                   
@@ -120,18 +135,22 @@ void setup() {
   
   /////////////////////////////////////
   //info en los finales de carrera
-  pinMode(iA1RClose,INPUT); //RX 0        
+  //  pinMode(iA1RClose,INPUT); //RX 0  
+      
   pinMode(iA4LClose,INPUT);  //15 k 59   
 
-  pinMode(iA0ROpen,INPUT);  //TX 1    
+  pinMode(iA0ROn,INPUT);  //TX 1    
+  pinMode(iA1LOn,INPUT);  //RX 1    
+
   pinMode(iA5LOpen,INPUT);   //14 j    
 
   //info de los pilotos
   //pilotos de giro
-  pinMode(iA3TurnR,INPUT); //16 l 60
   pinMode(iA2TurnL,INPUT); //17 m 61
+  pinMode(iA3TurnR,INPUT); //16 l 60
+
   //pilotos energizar motores
-  pinMode(iRxROn,INPUT);     //18 n 62
+  pinMode(iA0ROn,INPUT);     //18 n 62
   pinMode(iTxLOn,INPUT);     //19 o 63
 
   Serial.begin(9600);        // connect to the serial port
@@ -143,26 +162,26 @@ void setup() {
 
 void loop () {
 
-  identifyMotorsState();
-
   order  = Serial.read();      // read the serial port
   order  = order  - 48;
-  //   order  = processUserOrder (valor);
-  identifyDoorsState();
 
-  switch (doorsState()) {
-  case STOPPED:
-    activateDoors(order);
-    break;
-  case MOVING:
-    stopDoors();
-    break;
-  default:
-    Serial.print("Not valid DOORSS STATE. ERR_NOT_VALID: " );
-    Serial.println(ERR_NOT_VALID);
-    Serial.print("Order: " );
-    Serial.println(order);
-  }
+  identifyMotorsState();
+/*   //   order  = processUserOrder (valor); */
+/*   identifyDoorsState(); */
+
+/*   switch (doorsState()) { */
+/*   case STOPPED: */
+/*     activateDoors(order); */
+/*     break; */
+/*   case MOVING: */
+/*     stopDoors(); */
+/*     break; */
+/*   default: */
+/*     Serial.print("Not valid DOORSS STATE. ERR_NOT_VALID: " ); */
+/*     Serial.println(ERR_NOT_VALID); */
+/*     Serial.print("Order: " ); */
+/*     Serial.println(order); */
+/*   } */
 }
 
 
@@ -177,7 +196,7 @@ void identifyMotorsState(){
   case ON:
     //system idle for too many time, turn off
     //for now, do nothing
-    Serial.print("Motors are ON: " );
+    Serial.println("Motors are ON: " );
     break;
   case OFF:
     if(turnMotorsOn()){
@@ -220,283 +239,300 @@ int motorsState(){
   /*       isROn = false; */
   /*     } */
   //if true
+    Serial.println("*******************************");
+    Serial.println("inside motorsState()");
   if(isL_On() && isR_On()){
+    Serial.println("Both motors ON");
+    Serial.println("*******************************");
     return ON;
-  }else
+  }else{ 
+    Serial.println("Both motors OFF");
+    Serial.println("*******************************");
     return OFF;
+  }
 }
 //DONE
 boolean isL_On(){
-  if(digitalRead(iTxLOn) == HIGH){
+    Serial.println("************************");
+    Serial.println("inside isL_On()");
+
+  if(digitalRead(iA1LOn) == HIGH){
     Serial.println("Left motor ON");
     Serial.println(ON);
+    Serial.println("************************");
     return true;
   }
   Serial.println("Left motor OFF");
+  Serial.println("************************");
   return false;
 }
 //DONE
 boolean isR_On(){
-  if(iRxROn == HIGH){
+  Serial.println("************************");
+  Serial.println("inside isR_On()");
+
+  if(digitalRead(iA0ROn) == HIGH){
     Serial.println("Righ motor ON");
+    Serial.println("************************");
     return true;
   }
   Serial.println("Righ motor OFF");
+  Serial.println("************************");
   return false;
 }
 
-//DONE
-boolean isL_Turning(){
-  if((digitalRead(iA2TurnL) == HIGH){
-    Serial.println("TURNING_LEFT");
-    Serial.println(TURNING_LEFT);
-    return true;
-  }
-  Serial.println("NOT_TURNING_LEFT");
-  Serial.println(NOT_TURNING_LEFT);
-  return false;
-}
-//DONE
-boolean isR_Turning(){
-  if((digitalRead(iA2TurnL) == HIGH){
-    Serial.println("TURNING_RIGHT");
-    Serial.println(TURNING_RIGHT);
-    return true;
-  }
-  Serial.println("NOT_TURNING_RIGHT");
-  Serial.println(NOT_TURNING_RIGHT);
-  return false;
-}
-
-boolean areMotorsTurning(){
-  if(isL_Turning() && isR_Turning()){
-    Serial.println("MOTORS_TURNING");
-    Serial.println(MOTORS_TURNING);
-    return true;
-  }
-  Serial.println("MOTORS_NOT_TURNING");
-  Serial.println(MOTORS_NOT_TURNING);
-
-  return false;
-}
-
-////////////////////////////////////////////////////////
-// DOORSS
-////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////
-// Identify doors state
-
-//Return: STOPPED, DOORSS_CLOSE, DOORSS_UNKNOW
-int doorsState(){
-  areDoorsCompletelyOpen();
-  areDoorsCompletelyClose();
-  }
-
-boolean areDoorsCompletelyOpen(){
-
-}
-boolean isL_Open(){
-  digitalRead(iA5LOpen);
-}
-
-boolean isR_Open(){
-
-}
-
-
-//prerrequisitos
-//- la puerta debe estar cerrada o indeterminada
-//- los motores deben estar energizados
-int open(){
-  if(isDoorOpen()){
-    Serial.println(STOPPED);
-  }
-}
-
-
-
-//Do: revisa los estados de los finales de carrera para identificar si
-//    esta abierta,
-//verifica: las dos puertas.
-boolean isDoorOpen(){
-
-  return true;
-}
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Left door states
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//Do: check if left door is open
-//
-//Prerrequisites: system on
-boolean isLDoorOpen(){
-  //maybe missing digitalRead()
-
-  if((digitalRead(iA5LOpen) == LOW) && (digitalRead(iA4LClose) == HIGH)){
-    Serial.println("Left Door is OPEN");
-    return true;
-  }else{
-    Serial.println("Left Door is NOT open");
-    return false;
-  }
-}
-
-//Do: check if left door is open
-//
-//Prerrequisites: system on
-boolean isLDoorClose(){
-  //
-  if( (digitalRead(iA5LOpen) == HIGH) && (digitalRead(iA4LClose) == LOW)){
-    Serial.println("Left Door is OPEN");
-    return true;
-  }else{
-    Serial.println("Left Door is NOT open");
-    return false;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Right door
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//Do: check if left door is open
-//
-//Prerrequisites: system on
-boolean isLDoorOpen(){
-  //maybe missing digitalRead()
-
-  if((iA4LClose == HIGH) && (iA5LOpen == LOW)){
-    Serial.println("Left Door is OPEN");
-    return true;
-  }else{
-    Serial.println("Left Door is NOT open");
-    return false;
-  }
-}
-
-
-//Do: check if left door is open
-//
-//Prerrequisites: system on
-boolean isRDoorClose(){
-  //
-  if((iA LClose == LOW) && (iA5 Open == HIGH)){
-    Serial.println("Left Door is OPEN");
-    return true;
-  }else{
-    Serial.println("Left Door is NOT open");
-    return false;
-  }
-}
-
-int  identifyDoorsState() {
-  if(areDoors){
-  }
-  switch (doorsState()) {
-  case STOPPED:
-    activateDoors(order);
-    break;
-  case MOVING:
-    stopDoors();
-    break;
-  default:
-    Serial.print("Not valid DOORSS STATE. ERR_NOT_VALID: " );
-    Serial.println(ERR_NOT_VALID);
-    Serial.print("Order: " );
-    Serial.println(order);
-  }
-}
-
-void activateDoors(int order) {
-  //deliver messsage to the server, so they could inform the user
-  switch (order){
-  case OPEN_DOORS:
-    if(isOpeningDoors()){
-      Serial.println("Doors is being opened. Order: " );
-      Serial.println(order);
-    }else{
-      Serial.println("Doors can't be opened ERR_OPEN: " );
-      Serial.println(ERR_OPEN);
-    }
-    break;
-  case CLOSE_DOORS:
-    if(isClosingDoors()){
-	
-    }else{
-      Serial.println("Doors can't be closed ERR_CLOSE: " );
-      Serial.println(ERR_CLOSE);
-    }
-    break;
-  default:
-    //not value order
-    Serial.print("Not valid order ERR_NOT_VALID: " );
-    Serial.println(ERR_NOT_VALID);
-  }
-}
-
-void stopDoors() {
-  //deliver messsage to the server, so they could inform the user
-  if(isStopingDoors()){
-	
-  }else{
-    Serial.println("Doors can't be opened ERR_OPEN: " );
-    Serial.println(ERR_OPEN);
-  }
-}
-  
-boolean isOpeningDoors(){
-  digitalWrite(oP13LOpen, HIGH);
-  digitalWrite(oP12ROpen, HIGH);
-  delay(500);
-  return areMotorsTurning();
-}
-
-boolean isClosingDoors(){
-  digitalWrite(oP9LClose, HIGH);
-  digitalWrite(oP8RClose, HIGH);
-  delay(500);
-  //must return true
-  return areMotorsTurning();
-}
-
-boolean wereDoorsStopped(){
-  digitalWrite(oP11LStop, HIGH);
-  digitalWrite(oP10RStop, HIGH);
-  delay(500);
-  //must return false 
-  return areMotorsTurning();
-}
-
-
-/////////////////////////////////
-//serial functions
-void spPrintValue(int valor){
-  Serial.print("data: ");
-  Serial.println(valor);
-  delay(1000);
-}
-
-void spWriteStateOutput(){
-
-} 
-
-void spWriteStateInput(int pinInput,String pinName){
-  Serial.print(pinName+" : " );
-  if(digitalRead(pinInput)==HIGH){
-    spPrintValue(1);
-  }else{
-    spPrintValue(0);
-  }
-} 
-//user order 
-
-/* int processUserOrder(int valor){ */
-/*   //from ascii number to one to one representation */
-/*   valor = valor - 48; */
-
-/*   switch (valor){ */
-/*   case */
-/*     } */
-/*   return valor; */
+/* //DONE */
+/* boolean isL_Turning(){ */
+/*   if((digitalRead(iA2TurnL) == HIGH)){ */
+/*     Serial.println("TURNING_LEFT"); */
+/*     Serial.println(TURNING_LEFT); */
+/*     return true; */
+/*   } */
+/*   Serial.println("NOT_TURNING_LEFT"); */
+/*   Serial.println(NOT_TURNING_LEFT); */
+/*   return false; */
 /* } */
+/* //DONE */
+/* boolean isR_Turning(){ */
+/*   if((digitalRead(iA2TurnL) == HIGH)){ */
+/*     Serial.println("TURNING_RIGHT"); */
+/*     Serial.println(TURNING_RIGHT); */
+/*     return true; */
+/*   } */
+/*   Serial.println("NOT_TURNING_RIGHT"); */
+/*   Serial.println(NOT_TURNING_RIGHT); */
+/*   return false; */
+/* } */
+
+/* boolean areMotorsTurning(){ */
+/*   if(isL_Turning() && isR_Turning()){ */
+/*     Serial.println("MOTORS_TURNING"); */
+/*     Serial.println(MOTORS_TURNING); */
+/*     return true; */
+/*   } */
+/*   Serial.println("MOTORS_NOT_TURNING"); */
+/*   Serial.println(MOTORS_NOT_TURNING); */
+
+/*   return false; */
+/* } */
+
+/* //////////////////////////////////////////////////////// */
+/* // DOORSS */
+/* //////////////////////////////////////////////////////// */
+
+/* //////////////////////////////////////////////////////////////////////// */
+/* // Identify doors state */
+
+/* //Return: STOPPED, DOORSS_CLOSE, DOORSS_UNKNOW */
+/* int doorsState(){ */
+/*   areDoorsCompletelyOpen(); */
+/*   areDoorsCompletelyClose(); */
+/*   } */
+
+/* boolean areDoorsCompletelyOpen(){ */
+
+/* } */
+/* boolean isL_Open(){ */
+/*   digitalRead(iA5LOpen); */
+/* } */
+
+/* boolean isR_Open(){ */
+
+/* } */
+
+
+/* //prerrequisitos */
+/* //- la puerta debe estar cerrada o indeterminada */
+/* //- los motores deben estar energizados */
+/* int open(){ */
+/*   if(isDoorOpen()){ */
+/*     Serial.println(STOPPED); */
+/*   } */
+/* } */
+
+
+
+/* //Do: revisa los estados de los finales de carrera para identificar si */
+/* //    esta abierta, */
+/* //verifica: las dos puertas. */
+/* boolean isDoorOpen(){ */
+
+/*   return true; */
+/* } */
+/* //////////////////////////////////////////////////////////////////////////////////////////////////// */
+/* // Left door states */
+/* //////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+/* //Do: check if left door is open */
+/* // */
+/* //Prerrequisites: system on */
+/* boolean isLDoorOpen(){ */
+/*   //maybe missing digitalRead() */
+
+/*   if((digitalRead(iA5LOpen) == LOW) && (digitalRead(iA4LClose) == HIGH)){ */
+/*     Serial.println("Left Door is OPEN"); */
+/*     return true; */
+/*   }else{ */
+/*     Serial.println("Left Door is NOT open"); */
+/*     return false; */
+/*   } */
+/* } */
+
+/* //Do: check if left door is open */
+/* // */
+/* //Prerrequisites: system on */
+/* boolean isLDoorClose(){ */
+/*   // */
+/*   if( (digitalRead(iA5LOpen) == HIGH) && (digitalRead(iA4LClose) == LOW)){ */
+/*     Serial.println("Left Door is OPEN"); */
+/*     return true; */
+/*   }else{ */
+/*     Serial.println("Left Door is NOT open"); */
+/*     return false; */
+/*   } */
+/* } */
+
+/* //////////////////////////////////////////////////////////////////////////////////////////////////// */
+/* // Right door */
+/* //////////////////////////////////////////////////////////////////////////////////////////////////// */
+/* //Do: check if left door is open */
+/* // */
+/* //Prerrequisites: system on */
+/* boolean isLDoorOpen(){ */
+/*   //maybe missing digitalRead() */
+
+/*   if((iA4LClose == HIGH) && (iA5LOpen == LOW)){ */
+/*     Serial.println("Left Door is OPEN"); */
+/*     return true; */
+/*   }else{ */
+/*     Serial.println("Left Door is NOT open"); */
+/*     return false; */
+/*   } */
+/* } */
+
+
+/* //Do: check if left door is open */
+/* // */
+/* //Prerrequisites: system on */
+/* boolean isRDoorClose(){ */
+/*   // */
+/*   if((iA LClose == LOW) && (iA5 Open == HIGH)){ */
+/*     Serial.println("Left Door is OPEN"); */
+/*     return true; */
+/*   }else{ */
+/*     Serial.println("Left Door is NOT open"); */
+/*     return false; */
+/*   } */
+/* } */
+
+/* int  identifyDoorsState() { */
+/*   if(areDoors){ */
+/*   } */
+/*   switch (doorsState()) { */
+/*   case STOPPED: */
+/*     activateDoors(order); */
+/*     break; */
+/*   case MOVING: */
+/*     stopDoors(); */
+/*     break; */
+/*   default: */
+/*     Serial.print("Not valid DOORSS STATE. ERR_NOT_VALID: " ); */
+/*     Serial.println(ERR_NOT_VALID); */
+/*     Serial.print("Order: " ); */
+/*     Serial.println(order); */
+/*   } */
+/* } */
+
+/* void activateDoors(int order) { */
+/*   //deliver messsage to the server, so they could inform the user */
+/*   switch (order){ */
+/*   case OPEN_DOORS: */
+/*     if(isOpeningDoors()){ */
+/*       Serial.println("Doors is being opened. Order: " ); */
+/*       Serial.println(order); */
+/*     }else{ */
+/*       Serial.println("Doors can't be opened ERR_OPEN: " ); */
+/*       Serial.println(ERR_OPEN); */
+/*     } */
+/*     break; */
+/*   case CLOSE_DOORS: */
+/*     if(isClosingDoors()){ */
+	
+/*     }else{ */
+/*       Serial.println("Doors can't be closed ERR_CLOSE: " ); */
+/*       Serial.println(ERR_CLOSE); */
+/*     } */
+/*     break; */
+/*   default: */
+/*     //not value order */
+/*     Serial.print("Not valid order ERR_NOT_VALID: " ); */
+/*     Serial.println(ERR_NOT_VALID); */
+/*   } */
+/* } */
+
+/* void stopDoors() { */
+/*   //deliver messsage to the server, so they could inform the user */
+/*   if(isStopingDoors()){ */
+	
+/*   }else{ */
+/*     Serial.println("Doors can't be opened ERR_OPEN: " ); */
+/*     Serial.println(ERR_OPEN); */
+/*   } */
+/* } */
+  
+/* boolean isOpeningDoors(){ */
+/*   digitalWrite(oP13LOpen, HIGH); */
+/*   digitalWrite(oP12ROpen, HIGH); */
+/*   delay(500); */
+/*   return areMotorsTurning(); */
+/* } */
+
+/* boolean isClosingDoors(){ */
+/*   digitalWrite(oP9LClose, HIGH); */
+/*   digitalWrite(oP8RClose, HIGH); */
+/*   delay(500); */
+/*   //must return true */
+/*   return areMotorsTurning(); */
+/* } */
+
+/* boolean wereDoorsStopped(){ */
+/*   digitalWrite(oP11LStop, HIGH); */
+/*   digitalWrite(oP10RStop, HIGH); */
+/*   delay(500); */
+/*   //must return false  */
+/*   return areMotorsTurning(); */
+/* } */
+
+
+/* ///////////////////////////////// */
+/* //serial functions */
+/* void spPrintValue(int valor){ */
+/*   Serial.print("data: "); */
+/*   Serial.println(valor); */
+/*   delay(1000); */
+/* } */
+
+/* void spWriteStateOutput(){ */
+
+/* }  */
+
+/* void spWriteStateInput(int pinInput,String pinName){ */
+/*   Serial.print(pinName+" : " ); */
+/*   if(digitalRead(pinInput)==HIGH){ */
+/*     spPrintValue(1); */
+/*   }else{ */
+/*     spPrintValue(0); */
+/*   } */
+/* }  */
+/* //user order  */
+
+/* /\* int processUserOrder(int valor){ *\/ */
+/* /\*   //from ascii number to one to one representation *\/ */
+/* /\*   valor = valor - 48; *\/ */
+
+/* /\*   switch (valor){ *\/ */
+/* /\*   case *\/ */
+/* /\*     } *\/ */
+/* /\*   return valor; *\/ */
+/* /\* } *\/ */
 
