@@ -26,9 +26,17 @@ const int OFF          = 0;
 const int ON           = 1;
 
 //switch activating doors
-const int OPEN    = 2;
-const int CLOSE   = 3;
-const int STOP    = 4;
+const int OPEN      = 2;
+const int OPEN_L    = 2;
+const int OPEN_R    = 2;
+
+const int CLOSE     = 3;
+const int CLOSE_L   = 3;
+const int CLOSE_R   = 3;
+
+const int STOP      = 4;
+const int STOP_L    = 4;
+const int STOP_R    = 4;
 
 //FEEDBACK
 //switch door state
@@ -121,6 +129,7 @@ void setup() {
 
   //finales de carrera con logica invertida
   //Motores energizados          //       Pilotos activos     
+
   pinMode(oP6MoROn,OUTPUT); // 6  on iA0ROn On if On
   pinMode(oP7MoLOn,OUTPUT); // 7  on iTxLOn On if On
 
@@ -131,6 +140,7 @@ void setup() {
   //      iA1LOn when On todos R a off                                   
   //               en off cuando los otros en on  
   pinMode(oP9LClose,OUTPUT);   // 9  on iA2PilotoTurnL On
+
   //       iTxLClose when On todos L a off                                   
   //               en off cuando los otros en on  
 
@@ -171,7 +181,9 @@ void loop () {
   Serial.println("Set order: " );
   order  = Serial.read();      // read the serial port
   order  = order  - 48;
+  
   openLoopControl(order);
+  
   //feeback
   //  closeLoopControl(order);
   //  identifyMotorsState();
@@ -185,26 +197,62 @@ void loop () {
 void  openLoopControl(int order) {
   //feeback
   switch (order){
+
   case OFF://0
     turnMotorsOff();
     delay(1000);
     break;
+
   case ON://1
     turnMotorsOn();
     delay(1000);
     break;
+
   case OPEN://2
     doors(OPEN);
     delay(1000);
     break;
+
+/*   case OPEN_L://2 */
+/*     doors(OPEN_L); */
+/*     delay(1000); */
+/*     break; */
+
+/*   case OPEN_R://2 */
+/*     doors(OPEN_R); */
+/*     delay(1000); */
+/*     break; */
+
   case CLOSE://3
     doors(CLOSE);
     delay(1000);
     break;
+
+/*   case CLOSE_L://3 */
+/*     doors(CLOSE_L); */
+/*     delay(1000); */
+/*     break; */
+
+/*   case CLOSE_R://3 */
+/*     doors(CLOSE_R); */
+/*     delay(1000); */
+/*     break; */
+
   case STOP://4
     doors(STOP);//
     delay(1000);
     break;
+
+/*   case STOP_L://4 */
+/*     doors(STOP);// */
+/*     delay(1000); */
+/*     break; */
+
+/*   case STOP_R://4 */
+/*     doors(STOP);// */
+/*     delay(1000); */
+/*     break; */
+
   default:
     ;
    }
@@ -367,6 +415,7 @@ boolean isR_On(){
 ////////////////////////////////////////////////////////
 //openLoop
 void doors(int order){
+
   if(order == OPEN){
     digitalWrite(oP9LClose,LOW);
     digitalWrite(oP8RClose,LOW);
@@ -395,9 +444,55 @@ void doors(int order){
     digitalWrite(oP11LStop,HIGH);
     digitalWrite(oP10RStop,HIGH);
 
-    
   }
 }
+
+/* void doors(int order){ */
+/*   switch(order){  */
+/*   case OPEN: */
+/*     digitalWrite(oP9LClose,LOW); */
+/*     digitalWrite(oP8RClose,LOW); */
+
+/*     digitalWrite(oP11LStop,LOW); */
+/*     digitalWrite(oP10RStop,LOW); */
+
+/*     digitalWrite(oP13LOpen,HIGH); */
+/*     digitalWrite(oP12ROpen,HIGH); */
+/*     break; */
+/*   case CLOSE: */
+/*     digitalWrite(oP13LOpen,LOW); */
+/*     digitalWrite(oP12ROpen,LOW); */
+
+/*     digitalWrite(oP11LStop,LOW); */
+/*     digitalWrite(oP10RStop,LOW); */
+
+/*     digitalWrite(oP9LClose,HIGH); */
+/*     digitalWrite(oP8RClose,HIGH); */
+/*     break; */
+/*   case STOP: */
+/*     digitalWrite(oP13LOpen,LOW); */
+/*     digitalWrite(oP12ROpen,LOW); */
+
+/*     digitalWrite(oP9LClose,LOW); */
+/*     digitalWrite(oP8RClose,LOW); */
+
+/*     digitalWrite(oP11LStop,HIGH); */
+/*     digitalWrite(oP10RStop,HIGH); */
+/*     break; */
+/*   case OPEN_L:  */
+/*     digitalWrite(oP9LClose,LOW); */
+/*     break; */
+/*   case OPEN_R:  */
+    
+/*     break; */
+/*   } */
+/*   case CLOSE_L:  */
+    
+/*     break; */
+/*   case CLOSE_R:  */
+    
+/*     break; */
+/* } */
 
 void openDoors(int order){
   if(order == OPEN){
