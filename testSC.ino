@@ -42,8 +42,8 @@ const int STOP_R    = 4;
 //switch door state
 const int STOPPED             = 1;
 const int MOVING              = 2;
-const int TURNING_LEFT        = 2;
-const int TURNING_RIGHT       = 2;
+const int TURNING_LEFT        = 0x2;
+const int TURNING_RIGHT       = 0x3;
 
 
 //SYSTEM ERRORS
@@ -56,8 +56,8 @@ const int ERR_ON             = 8;
 const int ERR_OFF            = 9;
 const int ERR_NOT_VALID      = 53;
 
-const int NOT_TURNING_LEFT   = 2;
-const int NOT_TURNING_RIGHT  = 2;
+const int NOT_TURNING_LEFT   = 0xE2;
+const int NOT_TURNING_RIGHT  = 0xE3;
 
 const int MOTORS_TURNING = 2;
 const int MOTORS_NOT_TURNING = 2;
@@ -178,17 +178,30 @@ void setup() {
 }
 
 void loop () {
-  Serial.println("Set order: " );
+  //  Serial.println("Set order: " );
   order  = Serial.read();      // read the serial port
   order  = order  - 48;
-  
-  openLoopControl(order);
-  
-  //feeback
-  //  closeLoopControl(order);
-  //  identifyMotorsState();
-}
 
+  //////////////////////////////
+  //OpenLoop
+  //////////////////////////////
+  //test outputs
+  //  openLoopControl(order);
+  
+  //////////////////////////////
+  //feeback
+  //////////////////////////////
+  // closeLoopControl(order);
+
+  //   identifyMotorsState();
+
+  //////////////////////////////
+  //test methods inputs
+  //////////////////////////////
+  testMotorsOnOff();
+  //test pilotos de giro
+  testTurning();
+}
 ////////////////////////////////////////////////////////
 //open loop control
 ////////////////////////////////////////////////////////
@@ -295,28 +308,6 @@ void identifyMotorsState(){
 }
 
 //DONE
-boolean turnMotorsOn(){
-  digitalWrite(oP7MoLOn, HIGH);
-  digitalWrite(oP6MoROn, HIGH);
-  delay(500);
-  if(isL_On() && isR_On()){
-    return true;
-  }
-  return false;
-}
-
-//DONE
-boolean turnMotorsOff(){
-  digitalWrite(oP7MoLOn, LOW);
-  digitalWrite(oP6MoROn, LOW);
-  delay(500);
-  if(isL_On() && isR_On()){
-    return true;
-  }
-  return false;
-}
-
-//DONE
 int motorsState(){
   //motorsOn or Off
   /*     boolean isLOn = false; */
@@ -345,6 +336,29 @@ int motorsState(){
     return OFF;
   }
 }
+
+//DONE
+boolean turnMotorsOn(){
+  digitalWrite(oP7MoLOn, HIGH);
+  digitalWrite(oP6MoROn, HIGH);
+  delay(500);
+  if(isL_On() && isR_On()){
+    return true;
+  }
+  return false;
+}
+
+//DONE
+boolean turnMotorsOff(){
+  digitalWrite(oP7MoLOn, LOW);
+  digitalWrite(oP6MoROn, LOW);
+  delay(500);
+  if(isL_On() && isR_On()){
+    return true;
+  }
+  return false;
+}
+
 //DONE
 boolean isL_On(){
   Serial.println("************************");
@@ -357,6 +371,7 @@ boolean isL_On(){
     return true;
   }
   Serial.println("Left motor OFF");
+  Serial.println(OFF);
   Serial.println("************************");
   return false;
 }
@@ -367,36 +382,38 @@ boolean isR_On(){
 
   if(digitalRead(iA0ROn) == HIGH){
     Serial.println("Righ motor ON");
+    Serial.println(ON);
     Serial.println("************************");
     return true;
   }
   Serial.println("Righ motor OFF");
+  Serial.println(OFF);
   Serial.println("************************");
   return false;
 }
 
-/* //DONE */
-/* boolean isL_Turning(){ */
-/*   if((digitalRead(iA2TurnL) == HIGH)){ */
-/*     Serial.println("TURNING_LEFT"); */
-/*     Serial.println(TURNING_LEFT); */
-/*     return true; */
-/*   } */
-/*   Serial.println("NOT_TURNING_LEFT"); */
-/*   Serial.println(NOT_TURNING_LEFT); */
-/*   return false; */
-/* } */
-/* //DONE */
-/* boolean isR_Turning(){ */
-/*   if((digitalRead(iA2TurnL) == HIGH)){ */
-/*     Serial.println("TURNING_RIGHT"); */
-/*     Serial.println(TURNING_RIGHT); */
-/*     return true; */
-/*   } */
-/*   Serial.println("NOT_TURNING_RIGHT"); */
-/*   Serial.println(NOT_TURNING_RIGHT); */
-/*   return false; */
-/* } */
+//DONE
+boolean isL_Turning(){
+  if((digitalRead(iA2TurnL) == HIGH)){
+    Serial.println("TURNING_LEFT");
+    Serial.println(TURNING_LEFT);
+    return true;
+  }
+  Serial.println("NOT_TURNING_LEFT");
+  Serial.println(NOT_TURNING_LEFT);
+  return false;
+}
+//DONE
+boolean isR_Turning(){
+  if((digitalRead(iA2TurnL) == HIGH)){
+    Serial.println("TURNING_RIGHT");
+    Serial.println(TURNING_RIGHT);
+    return true;
+  }
+  Serial.println("NOT_TURNING_RIGHT");
+  Serial.println(NOT_TURNING_RIGHT);
+  return false;
+}
 
 /* boolean areMotorsTurning(){ */
 /*   if(isL_Turning() && isR_Turning()){ */
@@ -734,3 +751,17 @@ void closeDoors(int order){
 /* /\*   return valor; *\/ */
 /* /\* } *\/ */
 
+////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////
+void testMotorsOnOff(){
+  isL_On();
+  delay(1000);
+  isR_On();
+  delay(1000);
+}
+
+void   testTurning(){
+  isL_Turning();
+  isR_Turning();
+}
