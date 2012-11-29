@@ -106,8 +106,10 @@ int iRxROn = 0; // RX
 // iA0ROpen  = iA0ROn 23
 // iA1RClose = iA1LOn 22
 
-int iA0ROn  = 23; //19 A5 o
-int iA1LOn  = 22; //18 A4 n
+//iA0ROn A0
+//iA1LOn A1
+//int A0  = 23; //19 A5 o
+//int A1  = 22; //18 A4 n
 
 //pilotos de giro
 int iA2TurnL = 21; //17 A3 m
@@ -130,14 +132,14 @@ void setup() {
   //finales de carrera con logica invertida
   //Motores energizados          //       Pilotos activos     
 
-  pinMode(oP6MoROn,OUTPUT); // 6  on iA0ROn On if On
+  pinMode(oP6MoROn,OUTPUT); // 6  on A0 On if On
   pinMode(oP7MoLOn,OUTPUT); // 7  on iTxLOn On if On
 
   //puertas cerrandose           //       Pilotos de giro activos  
   pinMode(oP8RClose,OUTPUT);   // 8  on iA3PilotoTurnR On
                                  
   //       FC en on cuando se cierra
-  //      iA1LOn when On todos R a off                                   
+  //      A1 when On todos R a off                                   
   //               en off cuando los otros en on  
   pinMode(oP9LClose,OUTPUT);   // 9  on iA2PilotoTurnL On
 
@@ -156,8 +158,9 @@ void setup() {
       
   pinMode(iA4LClose,INPUT);  //15 k 59   
 
-  pinMode(iA0ROn,INPUT);  //TX 1    
-  pinMode(iA1LOn,INPUT);  //RX 1    
+  pinMode(A0 ,INPUT);  //TX 1    
+  //  digitalWrite(A0, LOW);
+  pinMode(A1,INPUT);  //RX 1    
 
   pinMode(iA5LOpen,INPUT);   //14 j    
 
@@ -167,7 +170,7 @@ void setup() {
   pinMode(iA3TurnR,INPUT); //16 l 60
 
   //pilotos energizar motores
-  pinMode(iA0ROn,INPUT);     //18 n 62
+  pinMode(A0,INPUT);     //18 n 62
   pinMode(iTxLOn,INPUT);     //19 o 63
 
   Serial.begin(9600);        // connect to the serial port
@@ -200,7 +203,7 @@ void loop () {
   //////////////////////////////
   testMotorsOnOff();
   //test pilotos de giro
-  testTurning();
+  //  testTurning();
 }
 ////////////////////////////////////////////////////////
 //open loop control
@@ -364,7 +367,7 @@ boolean isL_On(){
   Serial.println("************************");
   Serial.println("inside isL_On()");
 
-  if(digitalRead(iA1LOn) == HIGH){
+  if(digitalRead(A1) == HIGH){
     Serial.println("Left motor ON");
     Serial.println(ON);
     Serial.println("************************");
@@ -378,9 +381,9 @@ boolean isL_On(){
 //DONE
 boolean isR_On(){
   Serial.println("************************");
-  Serial.println("inside isR_On()");
-
-  if(digitalRead(iA0ROn) == HIGH){
+  Serial.println("inside isR_On() digitalRead(A0)");
+  Serial.println(digitalRead(A0));
+  if(digitalRead(A0) == HIGH){
     Serial.println("Righ motor ON");
     Serial.println(ON);
     Serial.println("************************");
@@ -395,7 +398,7 @@ boolean isR_On(){
 //DONE
 boolean isL_Turning(){
   if((digitalRead(iA2TurnL) == HIGH)){
-    Serial.println("TURNING_LEFT");
+    Serial.println("IS TURNING_LEFT");
     Serial.println(TURNING_LEFT);
     return true;
   }
@@ -406,7 +409,7 @@ boolean isL_Turning(){
 //DONE
 boolean isR_Turning(){
   if((digitalRead(iA2TurnL) == HIGH)){
-    Serial.println("TURNING_RIGHT");
+    Serial.println("IS TURNING_RIGHT");
     Serial.println(TURNING_RIGHT);
     return true;
   }
