@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 
-/* Just testing serial port communication and pins in the Leonardo board
+/* Just testing seria port communication and pins in the Leonardo board
  * Serial Read Blink in any pin with order send from pc 
  * -----------------
  * Turns on and off a light emitting diode(LED) connected to digital  
@@ -99,8 +99,8 @@ int oP6MoROn = 3;
 // iRxROn por iA0ROn 23
 // iTxLOn por iA1LOn 22
 //y
-int iTxLOn = 1; // TX
-int iRxROn = 0; // RX  
+//int iTxLOn = 1; // TX
+//int iRxROn = 0; // RX  
 
 //lugo de la prueba devolver
 // iA0ROpen  = iA0ROn 23
@@ -112,12 +112,12 @@ int iRxROn = 0; // RX
 //int A1  = 22; //18 A4 n
 
 //pilotos de giro
-int iA2TurnL = 21; //17 A3 m
-int iA3TurnR = 20; //16 A2 l
+//int iA2TurnL = 21; //17 A3 m
+//int iA3TurnR = 20; //16 A2 l
 
 //Finales de carrera
-int iA4LClose = 19; //15 A1 k On in Low Off in High
-int iA5LOpen = 18; //14 A0 j
+//int iA4LClose = 19; //15 A1 k On in Low Off in High
+//int iA5LOpen = 18; //14 A0 j
 
 
 //////////////////////////////////////////////////////////////
@@ -156,22 +156,23 @@ void setup() {
   //info en los finales de carrera
   //  pinMode(iA1RClose,INPUT); //RX 0  
       
-  pinMode(iA4LClose,INPUT);  //15 k 59   
+  pinMode(A4,INPUT);  //15 k 59   
 
-  pinMode(A0 ,INPUT);  //TX 1    
+  pinMode(A0,INPUT);  //TX 1    
   //  digitalWrite(A0, LOW);
   pinMode(A1,INPUT);  //RX 1    
 
-  pinMode(iA5LOpen,INPUT);   //14 j    
+  //iA5LOpen == A5
+  pinMode(A5,INPUT);   //14 j    
 
   //info de los pilotos
   //pilotos de giro
-  pinMode(iA2TurnL,INPUT); //17 m 61
-  pinMode(iA3TurnR,INPUT); //16 l 60
+  pinMode(A2,INPUT); //17 m 61
+  pinMode(A3,INPUT); //16 l 60
 
   //pilotos energizar motores
   pinMode(A0,INPUT);     //18 n 62
-  pinMode(iTxLOn,INPUT);     //19 o 63
+  //  pinMode(iTxLOn,INPUT);     //19 o 63
 
   Serial.begin(9600);        // connect to the serial port
  
@@ -397,7 +398,7 @@ boolean isR_On(){
 
 //DONE
 boolean isL_Turning(){
-  if((digitalRead(iA2TurnL) == HIGH)){
+  if((digitalRead(A2) == HIGH)){
     Serial.println("IS TURNING_LEFT");
     Serial.println(TURNING_LEFT);
     return true;
@@ -408,7 +409,7 @@ boolean isL_Turning(){
 }
 //DONE
 boolean isR_Turning(){
-  if((digitalRead(iA2TurnL) == HIGH)){
+  if((digitalRead(A2) == HIGH)){
     Serial.println("IS TURNING_RIGHT");
     Serial.println(TURNING_RIGHT);
     return true;
@@ -551,7 +552,7 @@ void closeDoors(int order){
 
 /* } */
 /* boolean isL_Open(){ */
-/*   digitalRead(iA5LOpen); */
+/*   digitalRead(A5); */
 /* } */
 
 /* boolean isR_Open(){ */
@@ -587,7 +588,7 @@ void closeDoors(int order){
 /* boolean isLDoorOpen(){ */
 /*   //maybe missing digitalRead() */
 
-/*   if((digitalRead(iA5LOpen) == LOW) && (digitalRead(iA4LClose) == HIGH)){ */
+/*   if((digitalRead(A5) == LOW) && (digitalRead(A4) == HIGH)){ */
 /*     Serial.println("Left Door is OPEN"); */
 /*     return true; */
 /*   }else{ */
@@ -601,7 +602,7 @@ void closeDoors(int order){
 /* //Prerrequisites: system on */
 /* boolean isLDoorClose(){ */
 /*   // */
-/*   if( (digitalRead(iA5LOpen) == HIGH) && (digitalRead(iA4LClose) == LOW)){ */
+/*   if( (digitalRead(A5) == HIGH) && (digitalRead(A4) == LOW)){ */
 /*     Serial.println("Left Door is OPEN"); */
 /*     return true; */
 /*   }else{ */
@@ -619,7 +620,7 @@ void closeDoors(int order){
 /* boolean isLDoorOpen(){ */
 /*   //maybe missing digitalRead() */
 
-/*   if((iA4LClose == HIGH) && (iA5LOpen == LOW)){ */
+/*   if((A4 == HIGH) && (A5 == LOW)){ */
 /*     Serial.println("Left Door is OPEN"); */
 /*     return true; */
 /*   }else{ */
