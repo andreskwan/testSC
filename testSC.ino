@@ -38,14 +38,15 @@ const int STOP      = 4;
 const int STOP_L    = 4;
 const int STOP_R    = 4;
 
+//is not moving 
 const int MIDDLE    = 5;
  
 //FEEDBACK
 //switch door state
 const int STOPPED             = 1;
-const int MOVING              = 2;
-const int _LEFT        = 0x2;
-const int TURNING_RIGHT       = 0x3;
+const int MOVING              = 6;
+const int MOVING_LEFT        = 0x2;
+const int MOVING_RIGHT       = 0x3;
 
 
 //SYSTEM ERRORS
@@ -58,11 +59,11 @@ const int ERR_ON             = 8;
 const int ERR_OFF            = 9;
 const int ERR_NOT_VALID      = 53;
 
-const int NOT_TURNING_LEFT   = 0xE2;
-const int NOT_TURNING_RIGHT  = 0xE3;
+const int NOT_MOVING_LEFT   = 0xE2;
+const int NOT_MOVING_RIGHT  = 0xE3;
 
-const int MOTORS_TURNING = 2;
-const int MOTORS_NOT_TURNING = 2;
+const int MOTORS_MOVING = 2;
+const int MOTORS_NOT_MOVING = 2;
 
 //const int DOORSS_UNKNOW    = 3
 //////////////////////////////////////////////////////////////
@@ -353,12 +354,12 @@ boolean isR_On(){
 //DONE
 boolean isR_Turning(){
   if((digitalRead(A3) == HIGH)){
-    Serial.println("IS TURNING_RIGHT");
-    Serial.println(TURNING_RIGHT);
+    Serial.println("IS MOVING_RIGHT");
+    Serial.println(MOVING_RIGHT);
     return true;
   }
-  Serial.println("NOT_TURNING_RIGHT");
-  Serial.println(NOT_TURNING_RIGHT);
+  Serial.println("NOT_MOVING_RIGHT");
+  Serial.println(NOT_MOVING_RIGHT);
   return false;
 }
 
@@ -533,11 +534,11 @@ boolean isL_On(){
 boolean isL_Turning(){
   if((digitalRead(A2) == HIGH)){
     Serial.println("LEFT Door turning");
-    Serial.println(TURNING_LEFT);
+    Serial.println(MOVING_LEFT);
     return true;
   }
   Serial.println("LEFT Door is not turning");
-  Serial.println(NOT_TURNING_LEFT);
+  Serial.println(NOT_MOVING_LEFT);
   return false;
 }
 
@@ -584,7 +585,7 @@ int leftDoorState(){
       return CLOSE;
     }else 
       if(isL_Turning()){
-	return TURNING;
+	return MOVING;
       }else{
       return MIDDLE;
     }
