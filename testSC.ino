@@ -43,8 +43,10 @@ const int MIDDLE    = 5;
  
 //FEEDBACK
 //switch door state
-const int STOPPED             = 1;
 const int MOVING              = 6;
+
+const int STOPPED             = 1;
+
 const int MOVING_LEFT        = 0x2;
 const int MOVING_RIGHT       = 0x3;
 
@@ -65,7 +67,6 @@ const int NOT_MOVING_RIGHT  = 0xE3;
 const int MOTORS_MOVING = 2;
 const int MOTORS_NOT_MOVING = 2;
 
-//const int DOORSS_UNKNOW    = 3
 //////////////////////////////////////////////////////////////
 // constants outputs
 
