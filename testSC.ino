@@ -2,8 +2,7 @@
 // Open loop version  (No Imputs)
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-
-/* Just testing seria port communication and pins in the Leonardo board
+/** Just testing seria port communication and pins in the Leonardo board
  * Serial Read Blink in any pin with order send from pc 
  * -----------------
  * Turns on and off a light emitting diode(LED) connected to digital  
@@ -21,50 +20,44 @@
  
 #include <SoftwareSerial.h>
 
-//switch system state
+///////////////////////////////////////
+//ORDERS 
+///////////////////////////////////////
+
+//change motor state
 const int OFF          = 0;
 const int ON           = 1;
 
-//switch activating doors
+//change doors state
 const int OPEN      = 2;
-const int OPEN_L    = 2;
-const int OPEN_R    = 2;
-
 const int CLOSE     = 3;
-const int CLOSE_L   = 3;
-const int CLOSE_R   = 3;
-
 const int STOP      = 4;
-const int STOP_L    = 4;
-const int STOP_R    = 4;
+ 
+///////////////////////////////////////
+//FEEDBACK
+///////////////////////////////////////
 
 //is not moving 
-const int MIDDLE    = 5;
- 
-//FEEDBACK
+const int MIDDLE             = 5;
+
 //switch door state
-const int MOVING              = 6;
-
-const int STOPPED             = 1;
-
-const int MOVING_LEFT        = 0x2;
-const int MOVING_RIGHT       = 0x3;
-
+const int MOVING             = 6;
 
 //SYSTEM ERRORS
 //change error format err_1
-const int ERR_CLOSE          = 6;
 const int ERR_OPEN           = 7;
-const int ERR_STOP           = 8;
+const int ERR_CLOSE          = 8;
+const int ERR_STOP           = 9;
 
 const int ERR_ON             = 8;
 const int ERR_OFF            = 9;
 const int ERR_NOT_VALID      = 53;
 
+const int NOT_MOVING        = 0xE2;
 const int NOT_MOVING_LEFT   = 0xE2;
 const int NOT_MOVING_RIGHT  = 0xE3;
 
-const int MOTORS_MOVING = 2;
+const int MOTORS_MOVING     = 2;
 const int MOTORS_NOT_MOVING = 2;
 
 //////////////////////////////////////////////////////////////
@@ -147,12 +140,10 @@ void setup() {
 }
 
 void loop () {
-  //  Serial.println("Set order: " );
+  Serial.println("Set order: " );
   order  = Serial.read();      // read the serial port
   order  = order  - 48;
-
-  //////////////////////////////
-  //OpenLoop
+  Serial.println();
   //////////////////////////////
   //test outputs
   //  openLoopControl(order);
@@ -160,7 +151,7 @@ void loop () {
   //////////////////////////////
   //feeback
   //////////////////////////////
-  // closeLoopControl(order);
+  closeLoopControl(order);
 
   //   identifyMotorsState();
 
@@ -253,7 +244,38 @@ void  openLoopControl(int order) {
 //close loop control
 ////////////////////////////////////////////////////////
 void closeLoopControl(int order){
+    //feeback
+  switch (order){
 
+  case OFF://0
+    turnMotorsOff();
+    delay(1000);
+    break;
+
+  case ON://1
+    turnMotorsOn();
+    delay(1000);
+    break;
+
+  case OPEN://2
+    doorsCL(OPEN);
+    delay(1000);
+    break;
+
+  case CLOSE://3
+    doorsCL(CLOSE);
+    delay(1000);
+    break;
+
+  case STOP://4
+    doorsCL(STOP);//
+    delay(1000);
+    break;
+
+  default:
+    ;
+   }
+  delay(1000);
 }
 
 ////////////////////////////////////////////////////////
@@ -349,18 +371,19 @@ boolean isR_On(){
   Serial.println("Righ motor OFF");
   Serial.println(OFF);
   Serial.println("************************");
-  return false;}
+  return false;
+}
 
 
 //DONE
 boolean isR_Turning(){
   if((digitalRead(A3) == HIGH)){
-    Serial.println("IS MOVING_RIGHT");
-    Serial.println(MOVING_RIGHT);
+    Serial.println("IS MOVING");
+    Serial.println(MOVING);
     return true;
   }
-  Serial.println("NOT_MOVING_RIGHT");
-  Serial.println(NOT_MOVING_RIGHT);
+  Serial.println("NOT_MOVING");
+  Serial.println(NOT_MOVING);
   return false;
 }
 
@@ -404,14 +427,85 @@ void doors(int order){
   }
 }
 
+void doorsCL(int order){
+  switch(order){
+  case OPEN:
+    leftDoor(OPEN);
+    delay(1000);
+    rightDoor(OPEN);
+    break;
+  case CLOSE:
+    leftDoor(CLOSE);
+    delay(1000);
+    rightDoor(CLOSE);
+    break;
+  case STOP:
+    leftDoor(STOP);
+    delay(1000);
+    rightDoor(STOP);
+    break;
+  }
+}
 
 ////////////////////////////////////////////////////////////////////////
-// RIGH door state
+// RIGHT door state
 ////////////////////////////////////////////////////////////////////////
+int rightDoor(int order){
+  switch(order){
 
+  case OPEN:
+    Serial.println("Opening right door");
+
+    //detengo
+    digitalWrite(oP10RStop,HIGH);
+
+    //desactivo otras acciones
+    digitalWrite(oP10RStop,LOW);
+    digitalWrite(oP8RClose,LOW);
+
+    //activo la orden
+    digitalWrite(oP12ROpen,HIGH);
+
+    //message for the server
+    Serial.println("");
+    break;
+
+  case CLOSE:
+    Serial.println("closimg right door");
+
+    //detengo
+    digitalWrite(oP10RStop,HIGH);
+
+    //desactivo otras acciones
+    digitalWrite(oP10RStop,LOW);
+    digitalWrite(oP12ROpen,LOW);
+
+    //activo la orden
+    digitalWrite(oP8RClose,HIGH);
+
+    //message for the server
+    Serial.println("");
+    break;
+
+  case STOP:
+    Serial.println("Stoping left door");
+    //detengo
+    digitalWrite(oP10RStop,HIGH);
+    //desactivo otras acciones
+    digitalWrite(oP10RStop,LOW);
+    digitalWrite(oP12ROpen,LOW);
+    //activo la orden
+    digitalWrite(oP8RClose,LOW);
+
+    //message for the server
+    Serial.println("");
+    break;
+  default:
+    Serial.println("Never should be here, DEFAULT rightDoor()");
+  } 
+}
 
 boolean isR_Open(){
-
   Serial.println("************************");
   Serial.println("inside isR_Open() digitalRead(A0)");
   Serial.println(digitalRead(iTx));
@@ -535,16 +629,15 @@ boolean isL_On(){
 boolean isL_Turning(){
   if((digitalRead(A2) == HIGH)){
     Serial.println("LEFT Door turning");
-    Serial.println(MOVING_LEFT);
+    Serial.println(MOVING);
     return true;
   }
   Serial.println("LEFT Door is not turning");
-  Serial.println(NOT_MOVING_LEFT);
+  Serial.println(NOT_MOVING);
   return false;
 }
 
-boolean isL_Open(){
-
+boolean isL_Open() {
   Serial.println("************************");
   Serial.println("inside isR_Open() digitalRead(A0)");
   Serial.println(digitalRead(A5));
@@ -558,7 +651,6 @@ boolean isL_Open(){
   Serial.println(CLOSE);
   Serial.println("************************");
   return false;
-
 }
 
 boolean isL_Close(){
@@ -575,7 +667,6 @@ boolean isL_Close(){
   Serial.println(OPEN);
   Serial.println("************************");
   return false;
-
 }
 
 int leftDoorState(){
