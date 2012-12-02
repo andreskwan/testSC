@@ -482,8 +482,78 @@ int rightDoorState(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // LEFT door state
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+int leftDoor(int order){
+  switch(order){
 
- 
+  case OPEN:
+    Serial.println("Opening left door");
+
+    //detengo
+    digitalWrite(oP11LStop,HIGH);
+
+    //desactivo otras acciones
+    digitalWrite(oP11LStop,LOW);
+    digitalWrite(oP9LClose,LOW);
+
+    //activo la orden
+    digitalWrite(oP13LOpen,HIGH);
+
+    //message for the server
+    Serial.println("");
+    break;
+
+  case CLOSE:
+    Serial.println("closimg left door");
+
+    //detengo
+    digitalWrite(oP11LStop,HIGH);
+
+    //desactivo otras acciones
+    digitalWrite(oP11LStop,LOW);
+    digitalWrite(oP13LOpen,LOW);
+
+    //activo la orden
+    digitalWrite(oP9LClose,HIGH);
+
+    //message for the server
+    Serial.println("");
+    break;
+
+  case STOP:
+    Serial.println("Stoping left door");
+    //detengo
+    digitalWrite(oP11LStop,HIGH);
+    //desactivo otras acciones
+    digitalWrite(oP11LStop,LOW);
+    digitalWrite(oP13LOpen,LOW);
+    //activo la orden
+    digitalWrite(oP9LClose,LOW);
+
+    //message for the server
+    Serial.println("");
+    break;
+  default:
+    Serial.println("Never should be here, DEFAULT leftDoor()");
+  } 
+}
+
+
+/**
+ *
+ *
+ */
+
+/**
+ * Using feedback signals 
+ *
+ */
+int leftDoorState(){
+
+}
+/*    digitalWrite(oP8RClose,LOW); */
+/*     digitalWrite(oP10RStop,LOW); */
+/*     digitalWrite(oP12ROpen,HIGH); */
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // RIGHT door state
