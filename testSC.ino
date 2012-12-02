@@ -44,7 +44,7 @@ const int MIDDLE    = 5;
 //switch door state
 const int STOPPED             = 1;
 const int MOVING              = 2;
-const int TURNING_LEFT        = 0x2;
+const int _LEFT        = 0x2;
 const int TURNING_RIGHT       = 0x3;
 
 
@@ -132,6 +132,7 @@ void setup() {
   //Right limit switch
   pinMode(iTx,INPUT);  //RClose
   pinMode(iRx,INPUT);  //ROpen
+
   //Left limit switch
   pinMode(A4,INPUT);   //LClose
   pinMode(A5,INPUT);   //LOpen
@@ -333,22 +334,6 @@ boolean turnMotorsOff(){
 }
 
 //DONE
-boolean isL_On(){
-  Serial.println("************************");
-  Serial.println("inside isL_On()");
-
-  if(digitalRead(A1) == HIGH){
-    Serial.println("Left motor ON");
-    Serial.println(ON);
-    Serial.println("************************");
-    return true;
-  }
-  Serial.println("Left motor OFF");
-  Serial.println(OFF);
-  Serial.println("************************");
-  return false;
-}
-//DONE
 boolean isR_On(){
   Serial.println("************************");
   Serial.println("inside isR_On() digitalRead(A0)");
@@ -365,17 +350,6 @@ boolean isR_On(){
   return false;}
 
 
-//DONE
-boolean isL_Turning(){
-  if((digitalRead(A2) == HIGH)){
-    Serial.println("IS TURNING_LEFT");
-    Serial.println(TURNING_LEFT);
-    return true;
-  }
-  Serial.println("NOT_TURNING_LEFT");
-  Serial.println(NOT_TURNING_LEFT);
-  return false;
-}
 //DONE
 boolean isR_Turning(){
   if((digitalRead(A3) == HIGH)){
@@ -430,8 +404,9 @@ void doors(int order){
 
 
 ////////////////////////////////////////////////////////////////////////
-// Identify doors state
+// RIGH door state
 ////////////////////////////////////////////////////////////////////////
+
 
 boolean isR_Open(){
 
@@ -537,19 +512,85 @@ int leftDoor(int order){
   } 
 }
 
+//DONE
+boolean isL_On(){
+  Serial.println("************************");
+  Serial.println("inside isL_On()");
 
-/**
- *
- *
- */
+  if(digitalRead(A1) == HIGH){
+    Serial.println("Left motor ON");
+    Serial.println(ON);
+    Serial.println("************************");
+    return true;
+  }
+  Serial.println("Left motor OFF");
+  Serial.println(OFF);
+  Serial.println("************************");
+  return false;
+}
 
-/**
- * Using feedback signals 
- *
- */
-int leftDoorState(){
+//DONE
+boolean isL_Turning(){
+  if((digitalRead(A2) == HIGH)){
+    Serial.println("LEFT Door turning");
+    Serial.println(TURNING_LEFT);
+    return true;
+  }
+  Serial.println("LEFT Door is not turning");
+  Serial.println(NOT_TURNING_LEFT);
+  return false;
+}
+
+boolean isL_Open(){
+
+  Serial.println("************************");
+  Serial.println("inside isR_Open() digitalRead(A0)");
+  Serial.println(digitalRead(A5));
+  if(digitalRead(A5) == LOW){
+    Serial.println("LEFT door Open");
+    Serial.println(OPEN);
+    Serial.println("************************");
+    return true;
+  }
+  Serial.println("LEFT door is not open");
+  Serial.println(CLOSE);
+  Serial.println("************************");
+  return false;
 
 }
+
+boolean isL_Close(){
+  Serial.println("************************");
+  Serial.println("inside isR_Close) digitalRead(A0)");
+  Serial.println(digitalRead(iTx));
+  if(digitalRead(iTx) == LOW){
+    Serial.println("Righ door is Close");
+    Serial.println(CLOSE);
+    Serial.println("************************");
+    return true;
+  }
+  Serial.println("Righ door is not close ");
+  Serial.println(OPEN);
+  Serial.println("************************");
+  return false;
+
+}
+
+int leftDoorState(){
+  if(isL_Open()){
+    return OPEN;
+  }else
+    if(isL_Close()) {
+      return CLOSE;
+    }else 
+      if(isL_Turning()){
+	return TURNING;
+      }else{
+      return MIDDLE;
+    }
+}
+
+
 /*    digitalWrite(oP8RClose,LOW); */
 /*     digitalWrite(oP10RStop,LOW); */
 /*     digitalWrite(oP12ROpen,HIGH); */
