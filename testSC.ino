@@ -63,21 +63,25 @@ const int MOTORS_NOT_MOVING = 2;
 //////////////////////////////////////////////////////////////
 // constants outputs
 
-//Rotaciones Motores
-int oP13LOpen = 13;
-int oP12ROpen = 12;
 
-//cortar la corriente 
+
+
+//ON Encendido Motores
+//quitar corriente en los motores
+int oP7MoLOn = 2;   //p1 == L  
+int oP6MoROn = 3;   //p2 == R
+
+//Stop cortar la corriente 
 int oP11LStop = 4;
 int oP10RStop = 5;
 
-int oP9LClose = 11;
-int oP8RClose = 10;
+//Rotaciones Motores
+int oP13LOpen = 6;//13;
+int oP12ROpen = 9;//12;
 
-//Encendido Motores
-//quitar corriente en los motores
-int oP7MoLOn = 2;
-int oP6MoROn = 3;
+//Close
+int oP9LClose = 10; //11
+int oP8RClose = 11; //10
 
 /////////////////////
 //an inputs
@@ -116,8 +120,8 @@ void setup() {
   //  pinMode(iA1RClose,INPUT); //RX 0  
 
   //motors
-  pinMode(A0,INPUT);  //R_M_On    
-  pinMode(A1,INPUT);  //L_M_On    
+  pinMode(iTx,INPUT);  //R_M_On    iTx
+  pinMode(iRx,INPUT);  //L_M_On    
 
   //info de los pilotos
   //pilotos de giro
@@ -125,8 +129,8 @@ void setup() {
   pinMode(A3,INPUT);   //turnR
  
   //Right limit switch
-  pinMode(iTx,INPUT);  //RClose
-  pinMode(iRx,INPUT);  //ROpen
+  pinMode(A0,INPUT);  //RClose
+  pinMode(A1,INPUT);  //ROpen
 
   //Left limit switch
   pinMode(A4,INPUT);   //LClose
@@ -276,6 +280,7 @@ void closeLoopControl(int order){
     ;
    }
   delay(1000);
+
 }
 
 ////////////////////////////////////////////////////////
@@ -285,11 +290,13 @@ void closeLoopControl(int order){
 // if motors can't be started  
 void identifyMotorsState(){
   switch (motorsState()){
+
   case ON:
     //system idle for too many time, turn off
     //for now, do nothing
     Serial.println("Motors are ON: " );
     break;
+
   case OFF:
     if(turnMotorsOn()){
       Serial.print("Motors has been Turn ON: " );
@@ -299,10 +306,12 @@ void identifyMotorsState(){
       Serial.println(ERR_ON);
     }
     break;
+
   default:
     Serial.print("Can't identify motor state. ERR_NOT_VALID: " );
     Serial.println(ERR_NOT_VALID);
   }
+
 }
 
 //DONE
@@ -508,8 +517,8 @@ int rightDoor(int order){
 boolean isR_Open(){
   Serial.println("************************");
   Serial.println("inside isR_Open() digitalRead(A0)");
-  Serial.println(digitalRead(iTx));
-  if(digitalRead(iRx) == LOW){
+  Serial.println(digitalRead(A1));
+  if(digitalRead(A1) == LOW){
     Serial.println("Righ door Open");
     Serial.println(OPEN);
     Serial.println("************************");
@@ -525,8 +534,8 @@ boolean isR_Open(){
 boolean isR_Close(){
   Serial.println("************************");
   Serial.println("inside isR_Close) digitalRead(A0)");
-  Serial.println(digitalRead(iTx));
-  if(digitalRead(iTx) == LOW){
+  Serial.println(digitalRead(A0));
+  if(digitalRead(A0) == LOW){
     Serial.println("Righ door is Close");
     Serial.println(CLOSE);
     Serial.println("************************");
@@ -656,8 +665,8 @@ boolean isL_Open() {
 boolean isL_Close(){
   Serial.println("************************");
   Serial.println("inside isR_Close) digitalRead(A0)");
-  Serial.println(digitalRead(iTx));
-  if(digitalRead(iTx) == LOW){
+  Serial.println(digitalRead(A0));
+  if(digitalRead(A0) == LOW){
     Serial.println("Righ door is Close");
     Serial.println(CLOSE);
     Serial.println("************************");
