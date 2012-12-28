@@ -92,7 +92,7 @@ void setup() {
 }
 
 void loop () {
-
+    digitalWrite(ledPin13, LOW);   // turn the LED on (HIGH is the voltage level)
   valor = Serial.read();      // read the serial port
 
   //Serial.println("Aqui inicia todo");
@@ -113,7 +113,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("o 63 pin23 == o");
     digitalWrite(ledPin23, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin23, LOW);   // turn the LED on (HIGH is the voltage level)
     break;   
    //n 
@@ -122,7 +122,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("n 62 pin22 == n");
     digitalWrite(ledPin22, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin22, LOW);   // turn the LED on (HIGH is the voltage level)
     break;  
   //m  
@@ -131,7 +131,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("m 61 pin21 == m");
     digitalWrite(ledPin21, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin21, LOW);   // turn the LED on (HIGH is the voltage level)
     break; 
     //l
@@ -140,7 +140,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("l 60 pin20 == l");
     digitalWrite(ledPin20, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin20, LOW);   // turn the LED on (HIGH is the voltage level)
     break;   
 //k
@@ -149,7 +149,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("k 59 pin19 == k");
     digitalWrite(ledPin19, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin19, LOW);   // turn the LED on (HIGH is the voltage level)
     break;   
    //j 
@@ -158,7 +158,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("j 58 pin18 == j");
     digitalWrite(ledPin18, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin18, LOW);   // turn the LED on (HIGH is the voltage level)
     break;  
   //i  
@@ -167,7 +167,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("i 57 pin17 == i");
     digitalWrite(ledPin17, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin17, LOW);   // turn the LED on (HIGH is the voltage level)
     break; 
     //h
@@ -176,7 +176,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("h 56 pin16 == h");
     digitalWrite(ledPin16, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin16, LOW);   // turn the LED on (HIGH is the voltage level)
     break;   
    //g 
@@ -185,7 +185,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("g 55 pin15 == g");
     digitalWrite(ledPin15, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin15, LOW);   // turn the LED on (HIGH is the voltage level)
     break;  
   //f  
@@ -194,7 +194,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("f pin14 == f");
     digitalWrite(ledPin14, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin14, LOW);   // turn the LED on (HIGH is the voltage level)
     break; 
   //e   
@@ -203,7 +203,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("e pin13 == e");
     digitalWrite(ledPin13, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin13, LOW);   // turn the LED on (HIGH is the voltage level)
     break;  
     //d
@@ -212,7 +212,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("d pin13 == d");
     digitalWrite(ledPin13, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin13, LOW);   // turn the LED on (HIGH is the voltage level)
     break;   
    //c 
@@ -221,25 +221,27 @@ void loop () {
     //do something when var equals 1
     Serial.println("c pin12 == c");
     digitalWrite(ledPin12, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin12, LOW);   // turn the LED on (HIGH is the voltage level)
     break;  
   //b  
   case 50:
-      printSerialValue(valor);
+    //  printSerialValue(valor);
     //do something when var equals 1
-    Serial.println("b pin11 == b");
-    digitalWrite(ledPin11, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
-    digitalWrite(ledPin11, LOW);   // turn the LED on (HIGH is the voltage level)
+    //    Serial.println("b pin11 == b");
+    Serial.println("CLOSED");
+    digitalWrite(ledPin13, HIGH);   // turn the LED on (HIGH is the voltage level)
+    //delay(1000);
+    //digitalWrite(ledPin11, LOW);   // turn the LED on (HIGH is the voltage level)
     break; 
   //a   
   case 49:
       printSerialValue(valor);
     //do something when var equals 1
-    Serial.println("a pin10 == a");
+      //    Serial.println("a pin10 == a");
+    Serial.print("Ox1");
     digitalWrite(ledPin10, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin10, LOW);   // turn the LED on (HIGH is the voltage level)
     break;    
   case 9:
@@ -247,7 +249,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("9 == a");
     digitalWrite(ledPin9, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin9, LOW);   // turn the LED on (HIGH is the voltage level)
     break;
   case 8:
@@ -255,7 +257,7 @@ void loop () {
     //do something when var equals 2
     Serial.println("8 == b");
     digitalWrite(ledPin8, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin8, LOW);   // turn the LED on (HIGH is the voltage level)
     break;
   case 7:
@@ -263,7 +265,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("7 == a");
     digitalWrite(ledPin7, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin7, LOW);   // turn the LED on (HIGH is the voltage level)
     break;
   case 6:
@@ -271,21 +273,21 @@ void loop () {
       printSerialValue(valor);
     Serial.println("6 == a");
     digitalWrite(ledPin6, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin6, LOW);   // turn the LED on (HIGH is the voltage level)
     break;
   case 5:
     //do something when var equals 1
     Serial.println("5 == a");
     digitalWrite(ledPin5, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin5, LOW);   // turn the LED on (HIGH is the voltage level)
     break;    
   case 4:
     //do something when var equals 1
     Serial.println("4 == a");
     digitalWrite(ledPin4, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin4, LOW);   // turn the LED on (HIGH is the voltage level)
     break;    
 
@@ -293,7 +295,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("3 == a");
     digitalWrite(ledPin3, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin3, LOW);   // turn the LED on (HIGH is the voltage level)
     break;    
 
@@ -301,7 +303,7 @@ void loop () {
     //do something when var equals 1
     Serial.println(" 2 == a");
     digitalWrite(ledPin2, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin2, LOW);   // turn the LED on (HIGH is the voltage level)
     break;
 
@@ -309,7 +311,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("1 TX == 1");
     digitalWrite(ledPin1, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin1, LOW);   // turn the LED on (HIGH is the voltage level)
     break;    
 
@@ -317,7 +319,7 @@ void loop () {
     //do something when var equals 1
     Serial.println("0 RX == 0");
     digitalWrite(ledPin0, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin0, LOW);   // turn the LED on (HIGH is the voltage level)
     break;    
 
@@ -334,7 +336,7 @@ void loop () {
 void printSerialValue(int valor){
     Serial.print("data: ");
     Serial.println(valor);
-    delay(1000);
+    //delay(1000);
     digitalWrite(ledPin18,HIGH);
 }
 
