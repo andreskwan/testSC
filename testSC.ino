@@ -1,6 +1,6 @@
-///////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
 // Open loop version  (No Imputs)
-///////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
 
 /** Just testing seria port communication and pins in the Leonardo board
  * Serial Read Blink in any pin with order send from pc 
@@ -17,15 +17,37 @@ OB * Created 12/11/12
 
 //NOTE
 //JUST resturn error codes not messages. 
- 
+
+/* TODO */
+/* motores se deben prender con las ordenes, no debe estar por separado */
+/* -- para esto */
+/*   - guardar estado de los motores, no importa, si ya esta encendido y se envia la orden */
+/*     continua encendido */
+/*   - lo importante seria saber cuando no lo estan */
+/*     el sistema se debe desenergizar al darle detener */
+/* -- finales de carrera */
+/*   - detener todo */
 #include <SoftwareSerial.h>
 
 ///////////////////////////////////////
 //ORDERS 
 ///////////////////////////////////////
-int prevSensorValue = 0;
+int prevSensorValueL = 0;
+int prevSensorValueR = 0;
+
+int sensorValueL = 0;
+int sensorValueR = 0;
+
 int prevOrderValue = 0;
 int iDelayStopDoors    = 1000;
+
+const int L_ABIERTA = 65;
+const int L_GIRANDO = 66;
+const int L_CERRADA = 67;
+
+const int R_ABIERTA = 85;
+const int R_CERRADA = 86;
+const int R_GIRANDO = 87;
 
 //change motor state
 const int OFF          = 5;
@@ -133,10 +155,10 @@ void setup() {
   pinMode(A5,INPUT);   //CLOSE LOpen
 
   //motors
-  pinMode(iTx,INPUT);  //R_M_On    iTx
-  pinMode(iRx,INPUT);  //L_M_On    
+  pinMode(iTx,INPUT);//R_M_On    iTx
+  pinMode(iRx,INPUT);//L_M_On    
 
-  Serial.begin(9600);        // connect to the serial port
+  Serial.begin(9600);// connect to the serial port
   while (!Serial) {
     ; // wait for serial port to connect. Needed for Leonardo only
   }
@@ -147,22 +169,39 @@ void loop () {
   // send data only when you receive data:
   //  if (Serial.available() > 0) {
     Serial.println("Set order: " );
-    order  = Serial.read();      // read the serial port
+    order  = Serial.read();// read the serial port
     order  = order  - 48;
-    Serial.println();
+    Serial.println(order);
     //////////////////////////////
     //test outputs
-    //  openLoopControl(order);
+    //openLoopControl(order);
   
     //////////////////////////////
     //feeback
     //////////////////////////////
+    //save previous order
+    
+    //    if(prevOrderValue != order ){
+      //garantizar estados de las senales
+      //turnMotorsOn();
+    Serial.print("prevSensorValueR: ");
+    Serial.println(prevSensorValueR);
 
-    closeLoopControl(order);
-    order = feedback(order);
+    Serial.print("prevSensorValueL: ");
+    Serial.println(prevSensorValueL);
 
-    // closeLoopControl(order);
-    //   identifyMotorsState();
+
+      closeLoopControl(order);
+      feedback(order);     
+
+      if(67 != L_CERRADA ){
+	Serial.print("son iguales: ");
+      }
+      //      prevOrderValue = order;
+      //    }
+
+    //closeLoopControl(order);
+    //identifyMotorsState();
 
     //////////////////////////////
     //test methods inputs
@@ -179,7 +218,7 @@ void loop () {
     //testLimitSwitch();
    
     //}
-  delay(100);
+  delay(1500);
 }
 ////////////////////////////////////////////////////////
 //open loop control
@@ -232,7 +271,7 @@ void  openLoopControl(int order) {
 void closeLoopControl(int order){
   //feeback
 
-  //identify state of the sistem
+  //identify state of the system
   switch (order){
 
   case OFF://0
@@ -246,24 +285,28 @@ void closeLoopControl(int order){
     break;
 
   case OPEN://2
+    //    turnMotorsOn();
     doorsCL(OPEN);
     delay(100);
     break;
 
   case CLOSE://3
+    //    turnMotorsOn();
     doorsCL(CLOSE);
     delay(100);
     break;
 
   case STOP://4
+    //    turnMotorsOn();
     doorsCL(STOP);//
     delay(100);
     break;
 
   default:
+    //Serial.println("orden no valida");;
     ;
   }
-  delay(100);
+  //  delay(100);
 
 }
 
@@ -314,15 +357,15 @@ int motorsState(){
   /*       isROn = false; */
   /*     } */
   //if true
-  Serial.println("*******************************");
-  Serial.println("inside motorsState()");
+ // Serial.println("*******************************");
+ // Serial.println("inside motorsState()");
   if(isL_On() && isR_On()){
-    Serial.println("Both motors ON");
-    Serial.println("*******************************");
+   // Serial.println("Both motors ON");
+   // Serial.println("*******************************");
     return ON;
   }else{ 
-    Serial.println("Both motors OFF");
-    Serial.println("*******************************");
+   // Serial.println("Both motors OFF");
+   // Serial.println("*******************************");
     return OFF;
   }
 }
@@ -339,6 +382,21 @@ boolean turnMotorsOn(){
 }
 
 //DONE
+void turnMotorLoff(){
+  digitalWrite(oP7MoLOn, LOW);
+  digitalWrite(oP9LClose,LOW);
+  digitalWrite(oP11LStop,LOW);
+  digitalWrite(oP13LOpen,LOW);
+
+}
+
+void turnMotorRoff(){
+  digitalWrite(oP6MoROn, LOW);
+  digitalWrite(oP8RClose,LOW);
+  digitalWrite(oP10RStop,LOW);
+  digitalWrite(oP12ROpen,LOW);
+}
+
 boolean turnMotorsOff(){
   digitalWrite(oP7MoLOn, LOW);
   digitalWrite(oP6MoROn, LOW);
@@ -360,18 +418,18 @@ boolean turnMotorsOff(){
 
 //DONE
 boolean isR_On(){
-  Serial.println("************************");
-  Serial.println("inside isR_On() digitalRead(A0)");
-  Serial.println(digitalRead(A0));
+ // Serial.println("************************");
+ // Serial.println("inside isR_On() digitalRead(A0)");
+ // Serial.println(digitalRead(A0));
   if(digitalRead(A0) == HIGH){
-    Serial.println("Righ motor ON");
-    Serial.println(ON);
-    Serial.println("************************");
+   // Serial.println("Righ motor ON");
+   // Serial.println(ON);
+   // Serial.println("************************");
     return true;
   }
-  Serial.println("Righ motor OFF");
-  Serial.println(OFF);
-  Serial.println("************************");
+ // Serial.println("Righ motor OFF");
+ // Serial.println(OFF);
+ // Serial.println("************************");
   return false;
 }
 
@@ -379,12 +437,12 @@ boolean isR_On(){
 //DONE
 boolean isR_Turning(){
   if((digitalRead(A3) == HIGH)){
-    Serial.println("IS MOVING");
-    Serial.println(MOVING);
+   // Serial.println("IS MOVING");
+   // Serial.println(MOVING);
     return true;
   }
-  Serial.println("NOT_MOVING");
-  Serial.println(NOT_MOVING);
+ // Serial.println("NOT_MOVING");
+ // Serial.println(NOT_MOVING);
   return false;
 }
 
@@ -460,47 +518,102 @@ int feedback(int order){
   int data = 0;
   if(digitalRead(A0)==LOW){
     //Serial.print("digitalRead(A0) :");
-    Serial.println(HIGH);
-    stopRightDoor();
-    Serial.println("R CLOSED ");
+    //Serial.println(HIGH);
+    Serial.println("A0 activada R_CERRADA");
+    Serial.print("prevSensorValueR: ");
+    Serial.println(prevSensorValueR);
+
+    if (order == CLOSE)
+      {
+	//	if(prevSensorValueL != R_CERRADA ){
+	Serial.println("stop right close");
+	  turnMotorRoff();
+	  stopRightDoor();
+	  
+	  Serial.println("R_CERRADA");
+	  prevSensorValueR = R_CERRADA;
+	  //	}
+      }
     //return STOP;//RCLOSE;
   } //else
   if(digitalRead(A1)==LOW){
-    //    Serial.print("diagitalRead(A1) :");
-    Serial.println(HIGH);
-    stopRightDoor();
-    Serial.println("R OPENED ");
+    Serial.println("diagitalRead(A1) : R_ABIERTA");
+    Serial.print("prevSensorValueR: ");
+    Serial.println(prevSensorValueR);
+    //Serial.println(HIGH);
+    if (order == OPEN){
+
+      if(prevSensorValueR != R_ABIERTA ){
+	turnMotorRoff();
+	stopRightDoor(); 
+	Serial.println("R_ABIERTA");
+	prevSensorValueR = R_ABIERTA;
+      }
+    }
     //return STOP;//ROPEN;
   } //else 
   if(digitalRead(A2)==HIGH){
-    // Serial.print("digitalRead(A2) :");
-    Serial.println(HIGH);
-    Serial.println("L GIRANDO");
+    Serial.println("digitalRead(A2) : L_GIRANDO");
+    //    Serial.println(HIGH);
+    Serial.print("prevSensorValueL: ");
+    Serial.println(prevSensorValueL);
+
+    if(prevSensorValueL != L_GIRANDO ){
+      Serial.println("L_GIRANDO");
+      prevSensorValueL = L_GIRANDO;
+    }
     //return order;
   } //else
   if(digitalRead(A3)==HIGH){
-    //    Serial.print("digitalRead(A3) :");
-    Serial.println(HIGH);
+    Serial.println("digitalRead(A3) : R_GIRANDO");
+    Serial.print("prevSensorValueR: ");
+    Serial.println(prevSensorValueR);
 
-    Serial.println("R GIRANDO");
+    //    Serial.println(HIGH);
+
+    if(prevSensorValueR != R_GIRANDO ){
+      Serial.println("R_GIRANDO");
+      prevSensorValueR = R_GIRANDO;
+    }
     //return order;
   } //else
   if(digitalRead(A4)==LOW){
-    //Serial.print("digitalRead(A4) :");
-    Serial.println(HIGH);
-    stopLeftDoor();
-    Serial.println("L OPENED ");
+    Serial.println("digitalRead(A4) : L_ABIERTA");
+    Serial.print("prevSensorValueL: ");
+    Serial.println(prevSensorValueL);
+
+    //Serial.println(HIGH);
     //return STOP;//LCLOSE;
+
+    if (order == OPEN){
+      if(prevSensorValueL != L_ABIERTA ){
+	turnMotorLoff();
+	stopLeftDoor();
+	Serial.println("L_ABIERTA");
+	prevSensorValueL = L_ABIERTA;
+      }
+    }
   } 
   if(digitalRead(A5)==LOW){
-    //Serial.print("digitalRead(A5) :");
-    Serial.println(HIGH);
-    stopLeftDoor();
-    Serial.println("L CERRADA");
+    //Serial.println("digitalRead(A5) :");
+    //Serial.println(HIGH);
+    Serial.println("A5 activada L_CERRADA");
+    Serial.print("prevSensorValueL: ");
+    Serial.println(prevSensorValueL);
+
+    if (order == CLOSE){
+      Serial.println("stop Left ");
+      //      if(prevSensorValueL != L_CERRADA ){
+	turnMotorLoff();
+	stopLeftDoor();
+	Serial.println("L_CERRADA");
+	prevSensorValueL = L_CERRADA;
+	//      }
+    }
     //return STOP;//LOPEN;
   } 
   /* if(digitalRead(iTx)==HIGH){ */
-  /*   Serial.print("digitalRead(iTx) :"); */
+  /*   Serial.println("digitalRead(iTx) :"); */
   /*   Serial.println(HIGH); */
 
   /*   Serial.println("R Motor ON "); */
@@ -509,7 +622,7 @@ int feedback(int order){
   /*   Serial.println("R Motor OFF "); */
   /* }  */
   /* if(digitalRead(iRx)==HIGH){ */
-  /*   Serial.print("digitalRead(iRx) :"); */
+  /*   Serial.println("digitalRead(iRx) :"); */
   /*   Serial.println(HIGH); */
 
   /*   Serial.println("L Motor On "); */
@@ -518,7 +631,8 @@ int feedback(int order){
   /*   Serial.println("L Motor OFF "); */
   /* }  */
  
-  return 88;
+ Serial.println("pppppppppppppppppppppppp ");
+  return 1234;
 }
 ////////////////////////////////////////////////////////////////////////
 // RIGHT door state
