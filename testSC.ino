@@ -32,13 +32,14 @@ OB * Created 12/11/12
 ///////////////////////////////////////
 //ORDERS 
 ///////////////////////////////////////
-int prevSensorValueL = 0;
-int prevSensorValueR = 0;
+String prevSensorValueL = " ";
+String prevSensorValueR = " ";
 
-int sensorValueL = 0;
-int sensorValueR = 0;
+String sensorValueL = " ";
+String sensorValueR = " ";
 
-int prevOrderValue = 0;
+int prevOrderValue = 33;
+
 int iDelayStopDoors    = 1000;
 
 const int L_ABIERTA = 65;
@@ -192,7 +193,7 @@ void loop () {
 
 
       closeLoopControl(order);
-      feedback(order);     
+      //      feedback(order);     
 
       if(67 != L_CERRADA ){
 	Serial.print("son iguales: ");
@@ -525,13 +526,16 @@ int feedback(int order){
 
     if (order == CLOSE)
       {
-	//	if(prevSensorValueL != R_CERRADA ){
+	//	if(prevSensorValueL != "R_CERRADA" ){
 	Serial.println("stop right close");
 	  turnMotorRoff();
 	  stopRightDoor();
 	  
 	  Serial.println("R_CERRADA");
-	  prevSensorValueR = R_CERRADA;
+	  prevSensorValueR = "R_CERRADA";
+	  Serial.print("after assing value prevSensorValueR: ");
+	  Serial.println(prevSensorValueR);
+
 	  //	}
       }
     //return STOP;//RCLOSE;
@@ -543,11 +547,11 @@ int feedback(int order){
     //Serial.println(HIGH);
     if (order == OPEN){
 
-      if(prevSensorValueR != R_ABIERTA ){
+      if(prevSensorValueR != "R_ABIERTA" ){
 	turnMotorRoff();
 	stopRightDoor(); 
 	Serial.println("R_ABIERTA");
-	prevSensorValueR = R_ABIERTA;
+	prevSensorValueR = "R_ABIERTA";
       }
     }
     //return STOP;//ROPEN;
@@ -558,9 +562,9 @@ int feedback(int order){
     Serial.print("prevSensorValueL: ");
     Serial.println(prevSensorValueL);
 
-    if(prevSensorValueL != L_GIRANDO ){
+    if(prevSensorValueL != "L_GIRANDO" ){
       Serial.println("L_GIRANDO");
-      prevSensorValueL = L_GIRANDO;
+      prevSensorValueL = "L_GIRANDO";
     }
     //return order;
   } //else
@@ -571,9 +575,9 @@ int feedback(int order){
 
     //    Serial.println(HIGH);
 
-    if(prevSensorValueR != R_GIRANDO ){
+    if(prevSensorValueR != "R_GIRANDO" ){
       Serial.println("R_GIRANDO");
-      prevSensorValueR = R_GIRANDO;
+      prevSensorValueR = "R_GIRANDO";
     }
     //return order;
   } //else
@@ -586,11 +590,11 @@ int feedback(int order){
     //return STOP;//LCLOSE;
 
     if (order == OPEN){
-      if(prevSensorValueL != L_ABIERTA ){
+      if(prevSensorValueL != "L_ABIERTA" ){
 	turnMotorLoff();
 	stopLeftDoor();
 	Serial.println("L_ABIERTA");
-	prevSensorValueL = L_ABIERTA;
+	prevSensorValueL = "L_ABIERTA";
       }
     }
   } 
@@ -603,11 +607,11 @@ int feedback(int order){
 
     if (order == CLOSE){
       Serial.println("stop Left ");
-      //      if(prevSensorValueL != L_CERRADA ){
+      //      if(prevSensorValueL != "L_CERRADA" ){
 	turnMotorLoff();
 	stopLeftDoor();
 	Serial.println("L_CERRADA");
-	prevSensorValueL = L_CERRADA;
+	prevSensorValueL = "L_CERRADA";
 	//      }
     }
     //return STOP;//LOPEN;
